@@ -1,9 +1,13 @@
-pandas>=2.2
-pyarrow>=15
-pytest>=8
-chromadb>=1.0
-sentence-transformers>=3.0
-google-genai>=1.0
-streamlit>=1.40
-rank-bm25>=0.2
-tabulate>=0.9
+# Versões exatas do ambiente em que a avaliação final rodou (Python 3.12.10, Windows, CPU).
+# O torch é instalado antes, à parte, na versão só para CPU (ver README).
+pandas==3.1.1
+pyarrow==26.0.1
+numpy==2.5.4
+sentence-transformers==6.2.0
+transformers==5.22.2
+chromadb==1.5.9
+google-genai==3.0.0
+streamlit==1.67.0
+rank-bm25==0.2.2
+tabulate==0.10.0
+pytest==9.2.0

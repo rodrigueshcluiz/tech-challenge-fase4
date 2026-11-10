@@ -229,7 +229,7 @@ Pergunta fora do escopo (Q21). Status: `fora_do_escopo`.
 
 ## Como reproduzir
 
-Requisitos: Python 3.10 ou superior, cerca de 4 GB livres e uma chave gratuita do [Groq](https://console.groq.com) (ou do Gemini). Não precisa de GPU.
+Requisitos: Python 3.11 ou superior (testado com 3.12.10), cerca de 4 GB livres e uma chave gratuita do [Groq](https://console.groq.com) (ou do Gemini). Não precisa de GPU.
 
 ```bash
 git clone https://github.com/rodrigueshcluiz/tech-challenge-fase4.git
@@ -240,7 +240,7 @@ python -m venv .venv
 Ative o ambiente: no Windows, `.venv\Scripts\activate`; no Linux ou Mac, `source .venv/bin/activate`. Depois instale:
 
 ```bash
-pip install torch --index-url https://download.pytorch.org/whl/cpu
+pip install torch==2.15.0 --index-url https://download.pytorch.org/whl/cpu
 pip install -r requirements.txt
 pip install -e .
 ```
