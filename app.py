@@ -62,7 +62,7 @@ with st.sidebar:
     cats = sorted({c for s in docs["categories"] for c in s.split("|") if c})
     categoria = st.selectbox("Categoria do produto", ["(todas)"] + cats)
     situacao = st.multiselect("Situação da entrega", list(SITUACOES), format_func=SITUACOES.get)
-    antes = st.checkbox("Só quem avaliou antes de receber")
+    antes = st.checkbox("Só quem respondeu antes de receber")
     meses = sorted(docs["review_date"].str[:7].unique())
     de, ate = st.select_slider("Período", options=meses, value=(meses[0], meses[-1]))
     st.divider()

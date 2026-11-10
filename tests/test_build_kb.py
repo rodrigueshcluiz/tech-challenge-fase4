@@ -35,6 +35,7 @@ def tabelas():
         linhas, columns=["review_id", "order_id", "review_score", "review_comment_title", "review_comment_message"]
     )
     reviews["review_creation_date"] = "2018-01-10 00:00:00"
+    reviews["review_answer_timestamp"] = "2018-01-10 12:00:00"
     entregas = {  # pedido: (status, entregue em, previsto para)
         "o1": ("shipped", None, "2018-01-08"),
         "o2": ("delivered", "2018-01-05 14:00:00", "2018-01-08"),
@@ -130,3 +131,12 @@ def test_e_idempotente(tabelas):
     a = build_documents(**tabelas)
     b = build_documents(**tabelas)
     pd.testing.assert_frame_equal(a, b)
+
+
+def test_respondeu_antes_de_receber_usa_a_data_da_resposta(tabelas):
+    """Revisão de 10/11: review_creation_date é o envio da pesquisa; o que importa é quando o cliente respondeu."""
+    t = dict(tabelas, reviews=tabelas["reviews"].copy())
+    t["reviews"].loc[t["reviews"].review_id == "r6", "review_answer_timestamp"] = "2018-01-20 10:00:00"  # respondeu depois de receber (dia 15)
+    docs = build_documents(**t).set_index("review_id")
+    assert docs.loc["r6", "reviewed_before_delivery"] == False  # noqa: E712  pesquisa enviada antes, resposta depois
+    assert docs.loc["r1", "reviewed_before_delivery"] == True  # noqa: E712  nunca entregue

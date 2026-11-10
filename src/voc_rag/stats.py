@@ -20,6 +20,6 @@ def format_stats(s: dict) -> str:
         f"Avaliações com texto no recorte: {s['n']}\n"
         f"% por nota: {s['pct_por_nota']}\n"
         f"% por situação da entrega: {s['pct_por_situacao_entrega']}\n"
-        f"% que avaliou sem ter recebido: {s['pct_avaliou_sem_receber']}\n"
+        f"% que respondeu a pesquisa antes de receber o produto: {s['pct_avaliou_sem_receber']}\n"
         f"Categorias mais frequentes (contagem): {s['top_categorias']}"
     )

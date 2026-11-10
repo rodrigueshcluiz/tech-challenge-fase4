@@ -5,7 +5,8 @@ P1 só avaliações com texto; P2 título + comentário num texto só;
 P6 remove só textos sem nenhuma letra (sem corte por tamanho);
 P4 uma linha por review_id, com a lista de pedidos;
 P5 metadados de nota, data, categoria, estado e status;
-P8 situação da entrega, dias de atraso e "avaliou sem ter recebido".
+P8 situação da entrega, dias de atraso e "respondeu antes de receber"
+(pela data da resposta, review_answer_timestamp; revisão de 10/11/2026).
 """
 import re
 from pathlib import Path
@@ -30,10 +31,11 @@ def _juntar(titulo: str, msg: str) -> str:
 def _entrega_por_avaliacao(r: pd.DataFrame, orders: pd.DataFrame) -> pd.DataFrame:
     """Situação da entrega de cada linha (avaliação x pedido), comparando só datas."""
     o = orders.set_index("order_id")
-    x = r[["review_id", "order_id", "review_creation_date"]].join(o, on="order_id")
+    x = r[["review_id", "order_id", "review_answer_timestamp"]].join(o, on="order_id")
     entregue = pd.to_datetime(x["order_delivered_customer_date"]).dt.normalize()
     previsto = pd.to_datetime(x["order_estimated_delivery_date"]).dt.normalize()
-    avaliado = pd.to_datetime(x["review_creation_date"]).dt.normalize()
+    # review_creation_date é o envio da pesquisa; quem conta é a data em que o cliente respondeu
+    avaliado = pd.to_datetime(x["review_answer_timestamp"]).dt.normalize()
     x["days_late"] = (entregue - previsto).dt.days.astype("Int64")
     x["delivery_status"] = "no_prazo"
     x.loc[x["days_late"] > 0, "delivery_status"] = "atrasado"
