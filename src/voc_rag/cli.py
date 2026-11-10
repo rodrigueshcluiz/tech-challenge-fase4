@@ -1,6 +1,6 @@
 """Comandos do projeto (rodar dentro da pasta voc-rag):
 
-  python -m voc_rag.cli testar-gemini        # 1 chamada de teste e lista de modelos (não mostra a chave)
+  python -m voc_rag.cli testar-llm           # 1 chamada de teste e lista de modelos (não mostra a chave)
   python -m voc_rag.cli base                 # etapa 1: data/raw -> data/processed/documents.parquet
   python -m voc_rag.cli indice               # etapa 2: embeddings + índice Chroma em data/chroma
   python -m voc_rag.cli perguntar "texto"    # etapas 3 e 4 no terminal
@@ -15,7 +15,7 @@ DOCS, CHROMA = "data/processed/documents.parquet", "data/chroma"
 REVISAO_E5 = os.environ.get("E5_REVISION")  # fixar o commit do modelo para reprodutibilidade
 
 
-def testar_gemini():
+def testar_llm():
     from voc_rag.llm import make_llm
 
     llm = make_llm()
@@ -52,8 +52,8 @@ def perguntar(pergunta):
 
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else ""
-    if cmd == "testar-gemini":
-        testar_gemini()
+    if cmd in ("testar-llm", "testar-gemini"):  # nome antigo continua valendo
+        testar_llm()
     elif cmd == "base":
         from voc_rag.build_kb import main
 
