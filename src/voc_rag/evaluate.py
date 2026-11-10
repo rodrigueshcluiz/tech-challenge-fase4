@@ -67,13 +67,17 @@ def run(questions, col, embedder, llm, docs, min_sim, k=8, parcial=None):
             "n_evid": len(r["evidences"]), "segundos": round(seg, 1), "busca": r["query"],
             "resposta": r.get("raw_answer") or r["answer"],
             "prompt_version": PROMPT_VERSION, "modelo": getattr(llm, "model", ""),  # texto do modelo, para a conferência manual
+            "ampla": r.get("stats") is not None,
+            "recusa_por": {"fora_do_escopo": "escopo", "sem_evidencia": "modelo" if r.get("raw_answer") else "semelhanca"}.get(r["status"], ""),
+            "usou_estatisticas": "[estatísticas" in (r.get("raw_answer") or r["answer"] or "").lower(),
         }
         if "relevante" in q:
-            linha["precisao_rag"] = precision(r["evidences"][:k], q["relevante"]) if r["status"] == "ok" else None
-            bm = bm25_search(apply_filters(docs, f), q["pergunta"], k=k)
+            n = len(r["evidences"]) or k  # mede todas as evidências usadas (40 nas perguntas amplas); o BM25 recebe o mesmo número
+            linha["precisao_rag"] = precision(r["evidences"], q["relevante"]) if r["status"] == "ok" else None
+            bm = bm25_search(apply_filters(docs, f), q["pergunta"], k=n)
             rx = re.compile(q["relevante"], re.I)
             linha["precisao_bm25"] = bm["text"].map(lambda s: bool(rx.search(s))).mean() if len(bm) else None
-            bm2 = bm25_search(apply_filters(docs, f), r["query"], k=k)  # mesma entrada do RAG: comparação justa
+            bm2 = bm25_search(apply_filters(docs, f), r["query"], k=n)  # mesma entrada do RAG: comparação justa
             linha["precisao_bm25_reescrita"] = bm2["text"].map(lambda s: bool(rx.search(s))).mean() if len(bm2) else None
         linhas.append(linha)
         print(f"{q['id']} {r['status']} ({seg:.0f}s)", flush=True)
@@ -91,6 +95,8 @@ def report(res: pd.DataFrame) -> str:
         "Precisão média das evidências, RAG": f"{validas.precisao_rag.mean():.2f}",
         "Precisão média das evidências, BM25 (pergunta original)": f"{validas.precisao_bm25.mean():.2f}",
         "Precisão média das evidências, BM25 (pergunta reescrita)": f"{validas.precisao_bm25_reescrita.mean():.2f}",
+        "Perguntas amplas que usaram as estatísticas": f"{(validas.ampla & validas.usou_estatisticas).sum()}/{validas.ampla.sum()}",
+        "Recusas pela trava de semelhança (sem chamar o LLM)": f"{(res.recusa_por == 'semelhanca').sum()}",
         "Tempo médio por pergunta (s)": f"{res.segundos.mean():.1f}",
     }
     md = "| Métrica | Resultado |\n|---|---|\n" + "\n".join(f"| {k} | {v} |" for k, v in resumo.items())
@@ -105,7 +111,7 @@ if __name__ == "__main__":
 
     import sys
 
-    min_sim = float(sys.argv[1]) if len(sys.argv) > 1 else 0.80
+    min_sim = float(sys.argv[1]) if len(sys.argv) > 1 else 0.85
     qs = json.load(open("eval/perguntas.json", encoding="utf-8"))
     res = run(qs, open_index(CHROMA), E5Embedder(revision=REVISAO_E5), make_llm(), pd.read_parquet(DOCS), min_sim,
               parcial="eval/resultados_parcial.csv")
