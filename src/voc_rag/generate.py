@@ -1,7 +1,7 @@
 """Etapa 4: monta o contexto, as instruções para o Gemini e confere as citações."""
 import re
 
-PROMPT_VERSION = "v3-2026-11-09"  # muda sempre que o prompt mudar; vai junto nos resultados da avaliação
+PROMPT_VERSION = "v4-2026-11-10"  # muda sempre que o prompt mudar; vai junto nos resultados da avaliação
 
 SYSTEM_PROMPT = """Você é um analista de Voz do Cliente de um e-commerce brasileiro (base pública da Olist).
 Responda em português, usando SOMENTE as avaliações de clientes fornecidas como evidências.
@@ -13,7 +13,8 @@ Regras:
 1. Toda afirmação precisa citar a evidência que a sustenta, sempre entre colchetes, uma por vez: [R1] [R2].
 2. Não invente fatos, números ou motivos que não estejam nas evidências.
 3. Não calcule porcentagens a partir das evidências: elas são uma amostra. Números só vêm do bloco
-   "Estatísticas do recorte", quando ele existir, e devem ser citados como tal.
+   "Estatísticas do recorte". Quando esse bloco existir, comece a resposta com uma linha "Panorama:" com 1 ou 2
+   números dele que respondam à pergunta, citados como [Estatísticas].
 4. Se NENHUMA evidência tratar do assunto da pergunta, responda só a palavra SEM_EVIDENCIA na primeira linha
    e, na segunda, uma frase curta dizendo o que faltou. Se só parte da pergunta tiver evidência, responda essa parte
    e diga claramente o que ficou sem evidência.
@@ -25,6 +26,7 @@ Responda de forma objetiva, em até 250 palavras.
 
 Exemplo de resposta bem citada (formato, não conteúdo):
 Pergunta: O que os clientes relatam sobre a entrega?
+Panorama: 9% das avaliações do recorte são de pedidos atrasados [Estatísticas]. (só quando houver o bloco de estatísticas)
 **Atraso:** vários clientes dizem que o pedido chegou depois do prazo [R1] [R3].
 **Não entrega:** há relatos de pedidos que nunca chegaram [R2].
 Não há evidências sobre o atendimento da transportadora."""
@@ -35,10 +37,13 @@ Devolva só um JSON com as chaves:
   de clientes do e-commerce; false caso contrário (ex.: preços atuais, outras empresas, assuntos gerais).
 - "broad": true se a pergunta pede panorama, principais temas, padrões ou frequência; false se é específica.
 - "query": a pergunta reescrita como uma frase curta no estilo de um comentário de cliente,
-  com os termos que um cliente usaria (ex.: "o produto não chegou, atraso na entrega")."""
+  com os termos que um cliente usaria (ex.: "o produto não chegou, atraso na entrega").
+  Mantenha o tom da pergunta: se ela é neutra ("o que acham da embalagem?"), a busca também é neutra
+  ("embalagem do produto"); não acrescente elogio nem reclamação que a pergunta não tenha."""
 
 _TRIGGER = r"(?i:\b(?:att|atenciosamente|obrigad[oa]|abra[cç]os?|ass)\b)[.,!:]*\s+"
-_NOME = r"(?:[A-ZÀ-Ý][a-zà-ÿ]+)(?:\s+[A-ZÀ-Ý][a-zà-ÿ]+){0,2}"
+_NOME = r"(?:[A-ZÀ-Ý][A-Za-zÀ-ÿ]+)(?:\s+[A-ZÀ-Ý][A-Za-zÀ-ÿ]+){0,2}"  # aceita "Maria", "MARIA SILVA", "Érica"
+_TAG = re.compile(r"<\s*/?\s*evid[eê]ncias\s*>", re.I)  # variações com espaço, acento e maiúsculas
 
 
 def mask_names(text: str) -> str:
@@ -55,7 +60,7 @@ def build_context(evidences) -> str:
 
 
 def build_prompt(question, evidences, stats_text=None) -> str:
-    ctx = re.sub(r"</?\s*evidencias\s*>", "[tag removida]", build_context(evidences), flags=re.I)  # avaliação não fecha o bloco
+    ctx = _TAG.sub("[tag removida]", build_context(evidences))  # avaliação não fecha o bloco
     p = (f"Pergunta: {question}\n\nEvidências (avaliações recuperadas; 'Nx' = quantas avaliações têm esse mesmo texto):\n"
          f"<evidencias>\n{ctx}\n</evidencias>")
     if stats_text:
