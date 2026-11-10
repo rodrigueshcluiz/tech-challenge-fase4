@@ -85,9 +85,9 @@ Fonte: [Brazilian E-Commerce Public Dataset by Olist](https://www.kaggle.com/dat
 | Seleção | Só avaliações com texto (título ou comentário): **42.138 documentos** | Sem texto não há "voz do cliente" para recuperar. 77% das notas 1 têm texto, contra 36-38% das notas 5: a base é naturalmente mais crítica, e isso é informado ao modelo |
 | Texto | Título + ". " + comentário; quebras de linha e espaços normalizados | O título costuma resumir a queixa ("Atraso") e ajuda a busca |
 | Limpeza mínima | Sai só o texto sem nenhuma letra ("...", "10"). **Não há corte por tamanho** | Um corte de 3 palavras eliminava queixas curtas e fortes como "não recebi". Lemos ~100 amostras antes de decidir |
-| Valores ausentes | Título/comentário ausentes viram vazio; categoria ausente vira "" (1.080 casos); dias de atraso fica vazio quando não houve entrega (não inventamos valor) | Ausência é informação, não erro |
-| Organização | Um documento por `review_id`, com a lista de pedidos (307 avaliações valem para mais de um pedido; vale o pior caso de entrega) | Evita duplicar o mesmo texto no índice |
-| Textos repetidos | 35.532 textos distintos. O embedding é calculado uma vez por texto, e na busca textos iguais viram **uma evidência com contagem** ("muito bom", 472x) | Repetições ocupavam todas as vagas do contexto |
+| Valores ausentes | Título/comentário ausentes viram vazio; categoria ausente vira "" (1.079 casos); dias de atraso fica vazio quando não houve entrega (não inventamos valor) | Ausência é informação, não erro |
+| Organização | Um documento por `review_id`, com a lista de pedidos (306 avaliações valem para mais de um pedido; vale o pior caso de entrega) | Evita duplicar o mesmo texto no índice |
+| Textos repetidos | 35.507 textos distintos. O embedding é calculado uma vez por texto, e na busca textos iguais viram **uma evidência com contagem** ("muito bom", 549x) | Repetições ocupavam todas as vagas do contexto |
 | Privacidade | Nomes de clientes no fim dos comentários ("Att, Maria") são mascarados antes de ir ao modelo e à tela | Dados pessoais não são necessários para a análise |
 | Lojas | O prompt avisa que os nomes de lojas estão anonimizados com casas de Game of Thrones (lannister, stark...) | Evita o modelo tratar "lannister" como marca ou pessoa |
 | Embeddings | E5 com prefixo `passage:` nos documentos e `query:` nas perguntas, vetores normalizados, distância cosseno | É como o E5 foi treinado; sem os prefixos a qualidade cai |
@@ -114,7 +114,7 @@ Quatro travas, da mais barata para a mais cara:
 | Leitura pelo modelo | O modelo lê as evidências e nenhuma trata do assunto (responde `SEM_EVIDENCIA`) | Recusa, e mostra as mais próximas |
 | Citações | A resposta não cita nada ou cita evidência inexistente | Resposta descartada; as evidências continuam visíveis |
 
-Por que quatro? A avaliação mostrou que **a semelhança sozinha não separa** perguntas sem evidência das válidas: "pagamento via PIX" (que não aparece na base de 2016-2018) teve semelhança máxima de 0,885, enquanto perguntas válidas com filtro ficaram em 0,881. Embeddings pequenos dão notas altas para qualquer texto do mesmo domínio. Por isso a decisão final é do modelo, que lê o conteúdo, e o limite de semelhança fica só como filtro barato.
+Por que quatro? A avaliação mostrou que **a semelhança sozinha não separa** perguntas sem evidência das válidas: na rodada 4, "chatbot de atendimento" (sem evidência) teve semelhança máxima de 0,896, enquanto a pergunta válida com menor semelhança (Q20, informática com filtro) ficou em 0,886. Embeddings pequenos dão notas altas para qualquer texto do mesmo domínio. Por isso a decisão final é do modelo, que lê o conteúdo, e o limite de semelhança fica só como filtro barato.
 
 ## Metadados (desafio adicional)
 
@@ -122,7 +122,7 @@ Filtros disponíveis na tela e na busca: **nota**, **categoria do produto**, **s
 
 Campos criados por nós:
 - `delivery_status` e `days_late`: comparam a data real de entrega com a prevista, só pela data.
-- `reviewed_before_delivery`: 5.106 avaliações (nota média 1,7) foram escritas antes de o produto chegar. É um recorte forte para entender a ansiedade com prazo.
+- `reviewed_before_delivery`: 4.721 clientes (nota média 1,6) responderam a pesquisa antes de o produto chegar. A data usada é a da resposta (`review_answer_timestamp`), e não a do envio da pesquisa (`review_creation_date`). É um recorte forte para entender a ansiedade com prazo.
 
 | Situação | Avaliações | Nota média |
 |---|---|---|
@@ -140,26 +140,34 @@ Como os metadados melhoram a recuperação: perguntas como "o que reclamam os cl
 - 5 fora do escopo;
 - 5 sem evidência, sobre assuntos cuja palavra-chave tem 0 menções na base: PIX, chatbot, cashback, cripto e realidade virtual.
 
-Medimos se o sistema responde ou recusa como esperado, a **precisão das evidências** (fração das recuperadas que é de fato relevante, por um padrão de palavras definido para cada pergunta) e a mesma precisão para uma **busca por palavra-chave (BM25)**, como linha de base.
+Medimos se o sistema responde ou recusa como esperado, a **precisão das evidências** (fração das evidências usadas que é de fato relevante, por um padrão de palavras definido para cada pergunta) e a mesma precisão para uma **busca por palavra-chave (BM25)**, como linha de base, com o mesmo número de evidências.
 
 As 30 perguntas funcionam como um *golden set*, e a precisão das evidências é uma forma simples de *context precision*.
 
-| Métrica | Rodada 1 | Rodada 2 | Rodada 3 (prompt v3) |
-|---|---|---|---|
-| Precisão das evidências, RAG | 0,85 | 0,86 | **0,81** |
-| Precisão, BM25 com a pergunta original | 0,49 | 0,49 | 0,49 |
-| Precisão, BM25 com a pergunta reescrita | – | 0,80 (recalculada) | **0,83** |
-| Perguntas válidas respondidas | 14/20 | 20/20 | 20/20 |
-| Recusas corretas | 6/10 | 10/10 | 9/10 |
-| Tempo médio por pergunta | 17 s | 21 s | 20 s |
+| Métrica | Rodada 1 | Rodada 2 | Rodada 3 (prompt v3) | Rodada 4 (prompt v4) |
+|---|---|---|---|---|
+| Precisão das evidências, RAG | 0,85 | 0,86 | 0,81 | **0,87** |
+| Precisão, BM25 com a pergunta original | 0,49 | 0,49 | 0,49 | 0,50 |
+| Precisão, BM25 com a pergunta reescrita | – | 0,80 (recalculada) | 0,83 | **0,71** |
+| Perguntas válidas respondidas | 14/20 | 20/20 | 20/20 | 20/20 |
+| Recusas corretas | 6/10 | 10/10 | 9/10 | 10/10 |
+| Respostas que usaram as estatísticas | – | 6 de 21 | 0 de 21 | 13 de 16 amplas |
+| Recusas pela trava de semelhança | – | – | – | 0 |
+| Tempo médio por pergunta | 17 s | 21 s | 20 s | 18 s |
 
-Rodada 1: limite de semelhança 0,80. Rodadas 2 e 3: 0,85. Todas usam o Groq (`openai/gpt-oss-120b`) e foram feitas em 09/11/2026.
+Rodada 1: limite de semelhança 0,80. Rodadas 2 a 4: 0,85. Todas usam o Groq (`openai/gpt-oss-120b`); as rodadas 1 a 3 são de 09/11/2026 e a 4 é de 10/11/2026.
+
+**Atenção à comparação:** nas rodadas 1 a 3 a precisão era medida só nas 8 primeiras evidências. Na rodada 4 ela passou a ser medida em **todas** as evidências que o modelo recebe (40 nas perguntas amplas), e o BM25 passou a buscar o mesmo número. Por isso a rodada 4 não é diretamente comparável às anteriores. Os resultados da rodada 3 ficaram guardados em `eval/rodada3_resultados.md` e `eval/rodada3_resultados.csv`.
 
 **O que os números dizem, com honestidade:**
-- **A reescrita da pergunta explica a maior parte do ganho.** Com a pergunta original, o BM25 fica em 0,49. Com a mesma pergunta reescrita que o RAG usa, ele sobe para 0,80 a 0,83, perto da busca densa. A comparação justa é entre as duas buscas com a mesma entrada.
-- **A métrica favorece a busca por palavra**, porque mede relevância por um padrão de palavras. Uma avaliação humana tende a valorizar mais a busca densa, que acha sinônimos ("não veio", "nunca recebi").
-- **Variação entre rodadas.** O LLM não é determinístico e são só 20 perguntas, então diferenças de ±0,05 (0,86 contra 0,81) são ruído, e não piora.
-- **Erro da rodada 3, e o que ele ensina:** a pergunta sobre chatbot devia ser recusada, mas foi respondida. Ao ler a resposta, vimos que o modelo achou reclamações reais sobre atendimento automático ("só um robô do outro lado da linha") e as citou corretamente. O rótulo "sem evidência" tinha sido conferido só pela palavra "chatbot", então o erro é em parte do gabarito, e não só do sistema. A lição é que um *golden set* também precisa de revisão. A resposta, porém, generaliza demais ("as menções ao chatbot"), e isso é um problema de fidelidade.
+- **A reescrita da pergunta ajuda muito.** Com a pergunta original, o BM25 fica em 0,50. Com a mesma pergunta reescrita que o RAG usa, ele sobe para 0,71. A comparação justa é entre as duas buscas com a mesma entrada.
+- **Com 40 evidências, a busca densa se destaca:** 0,87 contra 0,71 do BM25 com a pergunta reescrita. Nas 8 primeiras (rodadas 2 e 3) as duas ficavam próximas; a diferença aparece mais fundo na lista, onde a busca por palavra começa a trazer textos que só compartilham termos.
+- **A métrica favorece a busca por palavra**, porque mede relevância por um padrão de palavras. Ela também pode errar: na Q14 (embalagem) a precisão do RAG foi 0,25, provavelmente porque muitas avaliações falam de embalagem com palavras que o padrão não pega (não conferimos uma a uma). Uma avaliação humana tende a valorizar mais a busca densa, que acha sinônimos ("não veio", "nunca recebi").
+- **As estatísticas agora entram na resposta.** Na rodada 3 nenhuma resposta usava o bloco de estatísticas. Com o prompt v4, 13 das 16 perguntas amplas começam com uma linha "Panorama:" citando [Estatísticas]. As 3 que não usaram (Q08, Q14 e Q18) responderam só com as avaliações.
+- **A trava de semelhança nunca disparou** nas 30 perguntas: as recusas vieram da trava de escopo (5) e da leitura pelo modelo, `SEM_EVIDENCIA` (5). A menor semelhança de uma pergunta válida foi 0,886 e a maior de uma sem evidência foi 0,896, então nenhum limite separa os dois grupos. A trava fica como proteção barata, mas quem decide de fato é o modelo.
+- **Variação entre rodadas.** O LLM não é determinístico e são só 20 perguntas válidas, então diferenças de ±0,05 são ruído.
+- **Erro da rodada 3, e o que ele ensina:** a pergunta sobre chatbot devia ser recusada, mas foi respondida. Ao ler a resposta, vimos que o modelo achou reclamações reais sobre atendimento automático ("só um robô do outro lado da linha") e as citou corretamente. O rótulo "sem evidência" tinha sido conferido só pela palavra "chatbot", então o erro é em parte do gabarito, e não só do sistema. A lição é que um *golden set* também precisa de revisão. Na rodada 4 a mesma pergunta foi recusada.
+- **Limitação: viés da busca para elogios.** Na Q11 (atendimento e suporte), todas as evidências citadas na resposta são elogios, e ela termina dizendo que "não há evidências de críticas" ao atendimento, o que é falso para a base inteira (a Q01 mostra muitas reclamações de contato). A resposta é fiel às evidências que recebeu, mas não à base. Isso acontece porque a pergunta é neutra e os elogios curtos ("excelente atendimento") são os textos mais parecidos com ela. Uma correção seria buscar separadamente elogios e reclamações nas perguntas amplas.
 - **Próximo passo natural:** busca híbrida, juntando a densa e o BM25 por *Reciprocal Rank Fusion*.
 
 O que a 1ª rodada ensinou, e foi corrigido:
@@ -170,56 +178,48 @@ Para reproduzir: `python -m voc_rag.evaluate 0.85`, que gera `eval/resultados.md
 
 ## Exemplos de perguntas e respostas
 
+Respostas da rodada 4 (prompt v4-2026-11-10), copiadas de `eval/resultados.csv` sem edição.
+
 ### Quais são os principais problemas relatados pelos clientes em suas avaliações?
 
 Pergunta ampla (Q01). Status: `ok`.
 
-> **Principais problemas apontados pelos clientes**
+> Panorama: 9.1 % das avaliações apontam entregas atrasadas e 4.5 % relatam não‑entrega [Estatísticas].
 >
-> **1. Entrega (atrasos, não‑entregas e falhas nos Correios)**  
-> - Atrasos são citados em diversas avaliações, como “TERRIVEL ESTE PROBLEMA DA ENTREGA” [R7] e “Falta de consideração com o cliente!” [R32].  
-> - Não‑entregas aparecem em reclamações como “Resolva o problema. O produto ou meu dinheiro de volta” [R5] e “Total falta de respeito com o consumidor… nunca ligaram” [R15].  
-> - Problemas específicos com os Correios são mencionados em “Problemas com os Correios” [R1], “Problema no sistema de Correios por conta da greve” [R24] e “Acredito que o problema esteja nos correios” [R28].  
-> - **Estatística:** 9,1 % das avaliações relatam atraso e 4,5 % relatam não‑entrega [Estatísticas do recorte].
+> **Atrasos e não‑entregas** – A maior parte das reclamações refere‑se a problemas com os Correios ou com a logística da loja, como entregas fora do prazo (R3, R4, R6, R7, R27, R38), não‑entregas (R1, R9, R10, R15, R17, R28) e entregas parciais (R14, R18, R40).  
 >
-> **2. Produto incompleto ou errado**  
-> - Falta de itens: “Faltando produto. Veio faltando produto… Comprei 2 cortinas e só veio 1” [R6]; “Recebi somente um dos produtos, falta um” [R21].  
-> - Produto errado ou cor incorreta: “Aguardando desfecho… o produto veio na cor errada” [R14]; “Mas recebi 2 cobres leitos beje errados” [R30].
+> **Dificuldade de contato / comunicação** – Clientes denunciam a impossibilidade de falar com atendentes ou obter respostas, seja por telefone, e‑mail ou WhatsApp (R4, R5, R11, R13, R20, R22, R23, R31, R34, R36, R38).  
 >
-> **3. Defeito ou qualidade insatisfatória**  
-> - Defeito na tesoura: “a tesoura veio sem afiação” [R13]; peça solta e defeituosa em “Produto veio com uma peça com defeito… meio solto” [R31].  
-> - Qualidade ruim: “Produto de péssima qualidade” [R37].
+> **Problemas com o produto** – Há relatos de itens errados, incompletos ou com defeito, como tesoura sem afiar (R2), produto diferente do pedido (R25, R32, R36), falta de peças ou manual (R18, R34) e necessidade de buscar o item nos Correios (R19, R40).  
 >
-> **4. Falta de comunicação / respeito ao cliente**  
-> - Ausência de resposta: “Entrei em contato… não obtive resposta” [R12]; “não dão satisfação sobre o atraso” [R33]; “três e‑mails… sem retorno” [R35].  
-> - Sentimento de desrespeito: “Falta de compromisso com o cliente” [R4]; “falta de respeito com o cliente” [R11]; “Falta de consideração com o cliente!” [R32].
+> **Falta de respeito e tratamento inadequado** – Sentimentos de desrespeito ao consumidor são frequentes, citando “falta de compromisso” (R6), “desrespeito” (R11, R15, R17, R37, R38) e atendimento péssimo (R23, R31).  
 >
-> **5. Problemas operacionais externos**  
-> - Greve dos Correios impactando a entrega [R24]; “Problema no sistema de Correios por conta da greve” [R24].
+> **Problemas de pagamento** – Poucas avaliações tratam de questões financeiras, como cartão clonado (R39).  
 >
-> Esses temas concentram a maior parte das reclamações, refletindo que **entrega problemática**, **produto incompleto ou errado**, **defeitos de qualidade** e **falha na comunicação** são os principais pontos críticos apontados pelos consumidores.
+> Em síntese, os principais problemas apontados pelos clientes são atrasos ou ausência de entrega, comunicação ineficaz com o vendedor, defeitos ou incongruências nos produtos e percepções de desrespeito no atendimento.
 
 ### Quais são os principais problemas relatados nas avaliações com nota baixa?
 
 Pergunta com filtro (Q16). Filtro: `max_score = 2` (notas 1 e 2). Status: `ok`.
 
-> **Principais problemas apontados nas avaliações de nota baixa**
+> Panorama: 80.3 % das avaliações de nota baixa são de 1 estrela e 25.6 % relatam atraso na entrega [Estatísticas].
 >
-> - **Entrega incompleta ou falta de produtos** – clientes recebem menos itens que compraram ou nenhum item (ex.: “Comprei 2 cortinas e só veio 1” [R19]; “3 canecas, veio só uma e rachada” [R37]; “Não recebi o produto” [R12]).  
-> - **Produtos errados ou de baixa qualidade** – entrega de itens diferentes do solicitado ou com qualidade insatisfatória (ex.: “Recebi o produto errado” [R36]; “Produto de péssima qualidade” [R5]; “Produto de baixa qualidade, não atende especificação” [R29]).  
-> - **Problemas com nota fiscal** – ausência, valores divergentes ou notas inválidas (ex.: “Sem nota fiscal nem manual” [R3]; “Nota fiscal com valor muito mais barato” [R2]; “NF com valor extremamente inferior ao pago” [R13]; “Chave de NF‑e inválida” [R24]).  
-> - **Atrasos e não‑entregas** – pedidos entregues fora do prazo ou que nunca chegam, sem comunicação (ex.: “Produto mais que passou do prazo, não consigo falar com ninguém” [R7]; “Entrega não realizada, nenhum atendimento útil” [R39]; “Pedido cancelado antes da emissão da NF, fiquei sem produto e sem dinheiro” [R22]).  
-> - **Dificuldade de contato e suporte** – canais de atendimento ineficazes, respostas demoradas ou inexistentes (ex.: “Central de atendimento muito ruim, respondem quando querem” [R36]; “Protocolos abertos sem resposta” [R39]; “Não consigo entrar em contato para solucionar o problema” [R34]).  
-> - **Problemas ao cancelar ou devolver** – cancelamentos não processados e impossibilidade de devolução (ex.: “Tentando cancelar o produto, não fui avisada” [R18]; “Solicitei cancelamento e aguardo retorno, nada” [R21]).  
+> **Falta ou quantidade incorreta de produtos** – Vários clientes recebem menos itens que compraram ou quantidades divergentes na nota fiscal: “faltando 1” (R1), “compri 2 cortinas e só veio 1” (R3, R26), “recebi somente 01 unidade de 04 compradas” (R16), “veio apenas 1 de 5 unidades” (R18), “recebi 1 caneta de 2 compradas” (R30), “recebi 1 vaso de 2” (R39).
 >
-> Esses temas concentram a maior parte das reclamações nas avaliações de nota 1 e 2, refletindo falhas recorrentes em entrega, documentação fiscal, qualidade do produto e atendimento ao cliente.
+> **Problemas com nota fiscal** – Ausência, valores errados ou informações inválidas são citados: “entregue sem nota fiscal nem manual” (R5), “nota fiscal com valor muito mais barato” (R7), “NF com valor extremamente inferior ao pago” (R10), “chave de NF‑e inválida” (R12), “NF rasurada na quantidade” (R22), “nota fiscal incorreta quanto à quantidade” (R33).
+>
+> **Entrega atrasada ou não entregue** – Reclamações de não recebimento ou atraso significativo: “não recebi o produto” (R8), “entrega não realizada” (R23), “produto ainda não chegou após quase um mês” (R32), “agora não recebi o material” (R35), “esperando solução há mais de 1 mês” (R37).
+>
+> **Produto diferente do anunciado ou de baixa qualidade** – Divergência entre descrição e item recebido ou defeitos: “modelo 2+2 ao invés de 4+4” (R2), “novo vs remold” (R4), “produto de péssima qualidade” (R19), “problema na palmilha” (R21), “lentes com defeito” (R24), “produto falso” (R38), “marca diferente e inferior” (R40).
+>
+> **Dificuldade de cancelamento, troca e atendimento** – Falta de resposta e processos complicados: “dificuldade para trocar” (R6), “não respondem email, telefone não funciona” (R11), “cancelamento impossível após despacho” (R28), “sem atendimento útil” (R23), “nenhum retorno sobre cancelamento” (R17).
 
 ### O que os clientes acham do pagamento via PIX?
 
 Pergunta sem evidência (Q26). Status: `sem_evidencia`.
 
 > SEM_EVIDENCIA  
-> Nenhuma avaliação citada faz referência ao pagamento via PIX.
+> Não há avaliações que abordem o pagamento via PIX nas evidências fornecidas.
 
 ### Qual é o preço do iPhone hoje?
 

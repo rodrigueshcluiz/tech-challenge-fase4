@@ -1,0 +1,43 @@
+Prompt v3-2026-11-09, modelo openai/gpt-oss-120b. Limite usado: 0.85. Limite sugerido pelos dados: 0.8923
+
+| Métrica | Resultado |
+|---|---|
+| Perguntas válidas respondidas (status ok) | 20/20 |
+| Recusas corretas (fora do escopo ou sem evidência) | 9/10 |
+| Precisão média das evidências, RAG | 0.81 |
+| Precisão média das evidências, BM25 (pergunta original) | 0.49 |
+| Precisão média das evidências, BM25 (pergunta reescrita) | 0.83 |
+| Tempo médio por pergunta (s) | 19.9 |
+
+| id   | tipo           | esperado       | status         | acertou   |   sim_max |   n_evid |   segundos | busca                                                                          |   precisao_rag |   precisao_bm25 |   precisao_bm25_reescrita |
+|:-----|:---------------|:---------------|:---------------|:----------|----------:|---------:|-----------:|:-------------------------------------------------------------------------------|---------------:|----------------:|--------------------------:|
+| Q01  | no_tema        | ok             | ok             | True      |    0.9031 |       40 |       16.3 | problemas recorrentes nas avaliações                                           |          1     |           0.25  |                     0.75  |
+| Q02  | no_tema        | ok             | ok             | True      |    0.9306 |       40 |        3.7 | entrega atrasada, pacote não chegou                                            |          1     |           0.125 |                     1     |
+| Q03  | no_tema        | ok             | ok             | True      |    0.913  |       40 |       17.2 | os clientes elogiam a experiência de compra                                    |          0.75  |           0.375 |                     0.375 |
+| Q04  | no_tema        | ok             | ok             | True      |    0.9384 |       40 |       34   | produto com defeito, entrega atrasada, atendimento ruim                        |          1     |           0.75  |                     1     |
+| Q05  | no_tema        | ok             | ok             | True      |    0.9064 |       40 |       31.2 | qualidade dos produtos inconsistente, padrões recorrentes nas avaliações       |          0.25  |           0.5   |                     0.625 |
+| Q06  | no_tema        | ok             | ok             | True      |    0.9316 |       40 |       31.9 | entrega atrasada, pacote não chegou, entrega com danos                         |          1     |           0.25  |                     1     |
+| Q07  | no_tema        | ok             | ok             | True      |    0.9386 |        8 |       23.2 | entrega atrasada, prazo de entrega não cumprido                                |          1     |           0.5   |                     1     |
+| Q08  | no_tema        | ok             | ok             | True      |    0.9413 |       40 |       33.7 | produto chegou quebrado ou com defeito                                         |          0.875 |           0.25  |                     1     |
+| Q09  | no_tema        | ok             | ok             | True      |    0.9425 |        8 |        7   | pedido chegou incompleto, faltando itens                                       |          1     |           0.875 |                     1     |
+| Q10  | no_tema        | ok             | ok             | True      |    0.9561 |        8 |        7.9 | recebi produto diferente do que comprei                                        |          1     |           0.125 |                     1     |
+| Q11  | no_tema        | ok             | ok             | True      |    0.915  |       40 |       30.3 | atendimento e suporte da loja                                                  |          0.125 |           0.5   |                     1     |
+| Q12  | no_tema        | ok             | ok             | True      |    0.9178 |       40 |       21   | dificuldade para cancelar pedido e receber reembolso                           |          1     |           0.125 |                     0.875 |
+| Q13  | no_tema        | ok             | ok             | True      |    0.9497 |       40 |       25.5 | Entrega rápida, elogios à rapidez                                              |          1     |           0.875 |                     0.75  |
+| Q14  | no_tema        | ok             | ok             | True      |    0.9349 |       40 |       38.5 | embalagem ruim, produto chegou danificado                                      |          0.625 |           0.25  |                     0.375 |
+| Q15  | no_tema        | ok             | ok             | True      |    0.9235 |       40 |       22.2 | frete caro, reclamação                                                         |          0.75  |           1     |                     1     |
+| Q16  | filtro         | ok             | ok             | True      |    0.8805 |       40 |       17.9 | problemas recorrentes nas avaliações com nota baixa                            |          0.875 |           0.625 |                     0.875 |
+| Q17  | filtro         | ok             | ok             | True      |    0.8836 |       40 |       39.5 | os clientes elogiam a qualidade e variedade dos produtos de cama, mesa e banho |          0.5   |           0.75  |                     0.75  |
+| Q18  | filtro         | ok             | ok             | True      |    0.9357 |       40 |       27.1 | entrega atrasada, reclamações sobre atraso                                     |          1     |           0.625 |                     1     |
+| Q19  | filtro         | ok             | ok             | True      |    0.9183 |       40 |       16.5 | avaliação antes de receber o produto                                           |          0.75  |           0.25  |                     0.375 |
+| Q20  | filtro         | ok             | ok             | True      |    0.8932 |       40 |       43.5 | reclamações frequentes em informática e acessórios                             |          0.625 |           0.875 |                     0.875 |
+| Q21  | fora_do_escopo | fora_do_escopo | fora_do_escopo | True      |    0.8763 |        0 |        8   | qual o preço do iPhone hoje                                                    |        nan     |         nan     |                   nan     |
+| Q22  | fora_do_escopo | fora_do_escopo | fora_do_escopo | True      |    0.8653 |        0 |        3.2 | previsão do tempo para amanhã em São Paulo                                     |        nan     |         nan     |                   nan     |
+| Q23  | fora_do_escopo | fora_do_escopo | fora_do_escopo | True      |    0.8289 |        0 |        0.8 | quem ganhou a copa do mundo de 2022                                            |        nan     |         nan     |                   nan     |
+| Q24  | fora_do_escopo | fora_do_escopo | fora_do_escopo | True      |    0.8762 |        0 |        0.5 | receita de bolo de cenoura                                                     |        nan     |         nan     |                   nan     |
+| Q25  | fora_do_escopo | fora_do_escopo | fora_do_escopo | True      |    0.9047 |        0 |        8.8 | atendimento da Amazon insatisfatório                                           |        nan     |         nan     |                   nan     |
+| Q26  | sem_evidencia  | sem_evidencia  | sem_evidencia  | True      |    0.8948 |       40 |       16   | opinião sobre pagamento via PIX                                                |        nan     |         nan     |                   nan     |
+| Q27  | sem_evidencia  | sem_evidencia  | ok             | False     |    0.9037 |       40 |       38   | chatbot de atendimento ruim                                                    |        nan     |         nan     |                   nan     |
+| Q28  | sem_evidencia  | sem_evidencia  | sem_evidencia  | True      |    0.9041 |       40 |       14.8 | cashback não funciona, reclamação                                              |        nan     |         nan     |                   nan     |
+| Q29  | sem_evidencia  | sem_evidencia  | sem_evidencia  | True      |    0.8771 |        8 |       16.6 | pagamento com criptomoeda                                                      |        nan     |         nan     |                   nan     |
+| Q30  | sem_evidencia  | sem_evidencia  | fora_do_escopo | True      |    0.8636 |        0 |        0.9 | experiência de realidade virtual para provar roupas                            |        nan     |         nan     |                   nan     |

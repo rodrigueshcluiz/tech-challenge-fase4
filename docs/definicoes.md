@@ -17,4 +17,4 @@ Uma definição por métrica, usada em todo o projeto (código, README e vídeo)
 | `reviewed_before_delivery` | Verdadeiro quando o cliente respondeu a pesquisa (`review_answer_timestamp`) antes da data de entrega, ou o pedido nunca foi entregue. Até 10/11/2026 usava a data de envio da pesquisa, que não diz quando o cliente escreveu. |
 | Avaliação com vários pedidos | Vale o pior caso: pior `delivery_status`, maior `days_late` e `reviewed_before_delivery` verdadeiro se for verdadeiro em algum pedido. |
 
-Números na base completa (08/11/2026): 42.138 documentos; no prazo 36.420 (nota média 4,0), atrasado 3.829 (1,9), não entregue 1.889 (1,5); avaliou sem ter recebido 5.106 (1,7).
+Números na base completa (08/11/2026): 42.138 documentos; no prazo 36.420 (nota média 4,0), atrasado 3.829 (1,9), não entregue 1.889 (1,5); respondeu antes de receber 4.721 (1,6), recalculado em 10/11/2026 com a data da resposta.
