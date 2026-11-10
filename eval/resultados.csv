@@ -1,0 +1,253 @@
+id,tipo,esperado,status,acertou,sim_max,n_evid,segundos,busca,resposta,prompt_version,modelo,precisao_rag,precisao_bm25,precisao_bm25_reescrita
+Q01,no_tema,ok,ok,True,0.9031,40,16.3,problemas recorrentes nas avaliações,"**Atrasos e não‑entregas:**  
+Vários clientes apontam atrasos frequentes ou a total ausência de entrega, muitas vezes atribuindo o problema aos Correios [ R3 ] [ R9 ] [ R11 ] [ R17 ] [ R22 ] [ R33 ] [ R36 ]. Há relatos de pedidos que nunca chegam ou que retornam por erro de endereço [ R30 ] [ R36 ].
+
+**Problemas nos Correios:**  
+Além do atraso, há menções diretas a falhas nos serviços postais, como greves, caixas violadas ou necessidade de retirar o pedido na agência [ R1 ] [ R8 ] [ R14 ] [ R16 ] [ R22 ].
+
+**Itens faltantes ou incompletos:**  
+Clientes recebem menos itens do que compraram ou produtos parcialmente entregues [ R6 ] [ R12 ] [ R38 ] [ R40 ].
+
+**Produtos com defeito ou incorreto:**  
+Defeitos de fabricação (tesoura dura, palmilha problemática, brinquedo com defeito) e erros de cor/tamanho são citados [ R24 ] [ R25 ] [ R27 ] [ R35 ] [ R18 ].
+
+**Embalagem e avarias:**  
+Caixas amassadas, violadas ou sem manual geram insatisfação [ R15 ] [ R16 ] [ R32 ] [ R37 ].
+
+**Dificuldade de resolução:**  
+Muitos relatos destacam a falta de contato efetivo ou demora na solução dos problemas, obrigando o cliente a aguardar respostas por e‑mail ou telefone [ R26 ] [ R35 ] [ R38 ].
+
+Esses são os padrões mais recorrentes nas avaliações analisadas.",v3-2026-11-09,openai/gpt-oss-120b,1.0,0.25,0.75
+Q02,no_tema,ok,ok,True,0.9306,40,3.7,"entrega atrasada, pacote não chegou","**Atraso na entrega:** É a reclamação mais recorrente. Diversas avaliações apontam que o pedido chegou depois do prazo ou ainda não chegou: “entrega atrasada, produto ainda não veio” [R1]; “A entrega está atrasada” [R7]; “ATRASO ENORME NA ENTREGA” [R9]; “Atraso entrega. Não recebi o produto” [R10]; “Entrega atrasada” (repetido 4 vezes) [R11]; “Atraso na entrega.. ruim” [R6]; “Demora na entrega e ainda atrasou” [R8]; “Atraso. Produto não chegou no prazo” [R13]; “Entrega atrasada. Até o momento não foi entregue o produto” [R19]; “Atraso Entrega. A entrega ainda não foi efetuada” [R21]; “Atrasou na entrega” [R23]; “entrega atrasada. o prazo terminou e não recebi meu produto” [R24]; “Atraso. Era pra chegar em 7 dias úteis porém não foi entregue ainda” [R25]; “Não chegou no prazo. Não recebi” [R27]; “Atraso na entrega” (9 ocorrências) [R31]; “Atraso na Entrega. Acredito que a entrega não foi realizada devido a greve dos caminhoneiros” [R33]; “Atraso na entrega. Quero saber quando entregarão o produto?” [R34]; “Atraso. Ainda não recebi o produto” [R36].
+
+**Não entrega / pedido não recebido:** Outra queixa frequente refere‑se ao produto que nunca chegou: “ENTREGA NÃO EFETUADA” [R15]; “PRODUTO NÃO CHEGOU, E JÁ PASSOU O PRAZO DE ENTREGA” [R18]; “Atraso na entrega. Ainda não recebi o produto” (na categoria não entregue) [R16]; “Demora, produto não entregue!” [R32]; “Entrega não foi feita, péssimo atendimento” [R37]; “A COMPRA FOI CANCELADA … PELO PARCEIRO NÃO TER ENTREGUE” [R38].
+
+**Entrega incompleta ou errada:** Alguns relatos apontam problemas de itens faltantes ou errados: “Produto entregue faltando encomendas” [R3]; “erro na entrega. a entrega não chegou correta completa” [R14]; “Pedido entregue incompleto” [R29].
+
+**Resumo:** A maior parte das reclamações concentra‑se em **atrasos** (múltiplas ocorrências), seguidas por **não entrega** e, em menor escala, por **entregas incompletas ou erradas**.",v3-2026-11-09,openai/gpt-oss-120b,1.0,0.125,1.0
+Q03,no_tema,ok,ok,True,0.913,40,17.2,os clientes elogiam a experiência de compra,"**Entrega pontual ou antecipada** – A maioria dos elogios destaca que o pedido chegou dentro ou antes do prazo prometido, como “Amei a loja cumprem a entrega” [R1], “PARCEIRO EFICAZ QUANTO A LOGISTICA” [R4], “A MERCADORIA CHEGOU ANTES DO PRAZO PREVISTO” [R19] e “Entrega foi antes do prazo produto é como imaginei” [R32].
+
+**Qualidade e conformidade do produto** – Clientes ressaltam que o item recebido correspondeu à descrição e atendeu às expectativas: “Produto correto bom vendedor recomendo” [R26], “Amei otimo produto entrega rápida” [R21], “produto atendeu as expectativas” [R37] e “Ótimo produto entrega dentro do prazo” [R36].
+
+**Atendimento e confiabilidade do vendedor** – Há elogios ao comportamento do vendedor, à honestidade e ao suporte: “Vendedores otimos” [R17], “Vendedor honesto podem confiar” [R40], “Loja está de parabéns recomendo” [R8] e “Cliente 100% satisfeito” [R12].
+
+**Recomendação ao futuro comprador** – Muitos finalizam com convite à compra: “recomendo. cliente satisfeito” [R6], “Ótima loja recomendo” [R23], “recomendo a targaryen” [R18] e “recomendo” em diversas avaliações (ex.: [R27], [R28]).
+
+Esses quatro temas – pontualidade da entrega, conformidade do produto, qualidade do atendimento/vendedor e disposição de recomendar a loja – são os pontos mais citados nos elogios dos clientes.",v3-2026-11-09,openai/gpt-oss-120b,0.75,0.375,0.375
+Q04,no_tema,ok,ok,True,0.9384,40,34.0,"produto com defeito, entrega atrasada, atendimento ruim","**Atraso na entrega** – Muitos clientes reclamam que o pedido chegou depois do prazo previsto, inclusive com mensagens como “Atrasado e com defeito” e “Produto com entrega atrasada” [R1] [R5] [R8] [R13] [R15] [R21] [R34] [R35].
+
+**Não entrega (produto não recebido)** – Há relatos de pedidos que nunca chegaram ou que foram cancelados sem aviso, como “Não recebi o produto” e “O objeto comprado não foi entregue” [R2] [R9] [R12] [R",v3-2026-11-09,openai/gpt-oss-120b,1.0,0.75,1.0
+Q05,no_tema,ok,ok,True,0.9064,40,31.2,"qualidade dos produtos inconsistente, padrões recorrentes nas avaliações","**Padrões positivos de qualidade**  
+- A maioria das avaliações elogia a qualidade, descrevendo os itens como “ótimo”, “excelente” ou “de boa qualidade” e afirmando que estão “dentro dos padrões” ou “conforme descrito” [ R4 ] [ R9 ] [ R14 ] [ R15 ] [ R16 ] [ R17 ] [ R20 ] [ R26 ] [ R27 ] [ R30 ] [ R38 ] [ R39 ].  
+- Comentários recorrentes ressaltam que o produto corresponde à expectativa visual ou funcional (“produto bom”, “produto conforme esperado”, “produto correto”) [ R7 ] [ R28 ] [ R36 ] [ R40 ].  
+- Vários clientes mencionam que, além da qualidade, o item chegou em perfeito estado, sem avarias [ R4 ] [ R14 ] [ R34 ].  
+
+**Padrões negativos ou neutros de qualidade**  
+- Apenas duas avaliações apontam problemas: uma descreve o item como “regular” [ R1 ] e outra relata que o produto chegou quebrado, solicitando devolução [ R25 ].  
+
+**Resumo**  
+Os relatos disponíveis mostram um padrão dominante de satisfação com a qualidade dos produtos, usando termos como “ótimo”, “excelente” e “dentro dos padrões”. As críticas negativas são escassas (2/41 avaliações) e se limitam a questões de regularidade ou dano físico. Não há evidência de outros tipos de defeitos recorrentes.",v3-2026-11-09,openai/gpt-oss-120b,0.25,0.5,0.625
+Q06,no_tema,ok,ok,True,0.9316,40,31.9,"entrega atrasada, pacote não chegou, entrega com danos","**Atraso:** a maioria das reclamações aponta entregas depois do prazo prometido. Exemplos: “entrega atrasada” [R2]; “ATRASO ENORME NA ENTREGA” [R4]; “Demora na entrega” (várias vezes) [R5] [R9] [R11] [R12]; “Atraso no entrega” [R15]; “Produto com entrega atrasada” [R19]; “Atraso entrega. Não recebi o produto” [R20]; “entrega atrasada, produto ainda não veio” [R24]; “Entrega atrasada” [R25] [R27]; “Os correios atrasaram a entrega” [R28]; “ta demorando a entrega” [R29]; “Tive atraso na entrega” [R33]; “Atraso na entrega… presente de aniversário” [R36]; “O prazo de entrega finalizou e não recebi o produto” [R38]; “Ainda não recebi a compra” [R40].
+
+**Não entregue:** há relatos de pedidos que nunca chegaram. “Entrega não foi feita” [R3]; “COMPRA FOI CANCELADA… PARCEIRO NÃO TER ENTREGUE” [R6]; “ENTREGA. ATE AGORA O PRODUTO NÃO FOI ENTREGUE” [R7]; “PRODUTO NÃO CHEGOU” [R8]; “produto não entregue!” [R23]; “ENTREGA NÃO EFETUADA” [R31]; “não recebi o produto” (várias vezes) [R35] [R37] [R39].
+
+**Entrega incompleta ou errada:** “erro na entrega. a entrega não chegou correta completa” [R1]; “RECEBI O PRODUTO ERRADO” [R13]; “Produto entregue faltando encomendas” [R32].
+
+**Avaria e recusa:** “produto chegou avariado e recusei a entrega” [R18].
+
+**Falta de comunicação / rastreio:** clientes apontam ausência de retorno e dificuldade de rastrear o pedido – “não recebi nenhum retorno” [R4]; “Dificuldade de rastreio” [R21]; “não me responde os meus contatos” [R22]; “aguardo informações” [R40].
+
+Esses são os principais problemas de entrega identificados nas avaliações.",v3-2026-11-09,openai/gpt-oss-120b,1.0,0.25,1.0
+Q07,no_tema,ok,ok,True,0.9386,8,23.2,"entrega atrasada, prazo de entrega não cumprido","**Atrasos recorrentes:**  
+- “entrega atrasada. o prazo terminou e nao recebi meu produto” [R1]  
+- “demora na entrega. demora na entrega” [R3]  
+- “Produto com entrega atrasada” [R4]  
+- “Ate agora aguardando a entrega..Nâo cumpriu o prazo” [R5]  
+- “NÃO CUMPRIU O PRAZO. NÃO CUMPRIU O PRAZO DE ENTREGA” [R6]  
+- “O prazo da entrega nao foi comprido.” [R8]  ",v3-2026-11-09,openai/gpt-oss-120b,1.0,0.5,1.0
+Q08,no_tema,ok,ok,True,0.9413,40,33.7,produto chegou quebrado ou com defeito,"**Quebrado ao chegar:** a maioria das reclamações indica que o produto já vem danificado no momento da entrega, independentemente da categoria – “O produto chegou quebrado” (brinquedos) [R2]; “O produto está quebrado” (utilidades_domésticas) [R9]; “O produto chegou com uns parte quebrada” (moveis escritório) [R10]; “Produto veio quebrado” (brinquedos) [R4]; “Produto avariado, quebrado” (eletrônicos) [R18]; “Mercadoria quebrada… chegou com a voltagem errada e quebrado” (artes e artesanato) [R28]; “O produto chegou quebrado. Simplesmente assim, uma taça veio quebrada” (utilidades domésticas) [R21].
+
+**Defeito de fabricação ou peça quebrada:** há relatos de falhas específicas, como alça ou cabo quebrado [R17]; encaixe do parafuso quebrado na cadeira [R30]; tampa de MDF quebrada [R20]; pingente com defeito, quebrado [R35]; produto com defeito geral [R31]; “Produto com defeito” (relogios presentes) [R8]; “Produto chegou no prazo, mas com defeito” (telefonia) [R33].
+
+**Embalagem inadequada:** alguns clientes apontam que a má proteção contribuiu para o dano – “Produto mal embalado. Produto chegou quebrado” (moveis decoração) [R38]; “Embalagem aberta e um dos braços da cadeira com o encaixe quebrado” (moveis escritório) [R30]; “Acondicionar melhor… veio embalado em papel fino” (esporte lazer) [R34].
+
+**Dificuldade na troca ou devolução:** vários relatos mencionam falta de suporte ou impossibilidade de substituir o item – “Estou tentando trocar ou devolver” (moveis decoração) [R5]; “Não recebi nenhuma posição dos fornecedores” (automotivo) [R26]; “Tentei ver a substituição e o produto não está mais disponível” (utilidades domésticas) [R21]; “Solicito a troca… por outro em perfeito estado” (cine foto) [R39].
+
+Em síntese, os clientes apontam que produtos chegam frequentemente quebrados ou com defeitos, atribuídos a embalagens fracas e, frequentemente, encontram barreiras para obter troca ou reembolso.",v3-2026-11-09,openai/gpt-oss-120b,0.875,0.25,1.0
+Q09,no_tema,ok,ok,True,0.9425,8,7.0,"pedido chegou incompleto, faltando itens","**Sim.** Vários clientes registraram que seus pedidos chegaram incompletos, faltando um ou mais itens:
+
+- Relatos de falta de um único item: “Pedido incompleto. Meu pedido chegou faltando um item.” [R1] ; “Meu pedido veio incompleto. Ficou faltando um item.” [R2] ; “Meu pedido chegou faltando um produto.” [R7].
+- Falta de peças ou produtos múltiplos: “Entrega incompleta, faltou duas peças.” [R5] ; “Comprei dois itens e recebi apenas um.” [R8].
+- Falta de itens específicos: “Pedido veio incompleto falta no jogo de tapete.” [R6] ; “Produto entregue faltando encomendas.” [R3] ; “Pedido entregue incompleto.” [R4].
+
+Todas as avaliações citadas apontam para o mesmo problema de entrega parcial. Não há evidências de que o problema tenha sido resolvido ou que ocorram entregas completas.",v3-2026-11-09,openai/gpt-oss-120b,1.0,0.875,1.0
+Q10,no_tema,ok,ok,True,0.9561,8,7.9,recebi produto diferente do que comprei,"**Sim, há reclamações recorrentes de clientes que receberam um produto diferente do que compraram.**  
+
+- **Produto diferente do anunciado/comprado:** Vários relatos apontam que o item entregue não corresponde ao anunciado ou ao pedido original, como “Recebi o produto diferente do que comprei” [R1] e “Recebi o produto diferente do que foi anunciado e comprado” [R4].  
+- **Produto enviado diferente do solicitado:** Há menções explícitas de envio de item divergente, por exemplo “Produto enviado diferente do solicitado” [R5] e “O produto chegou diferente do comprado” [R6].  
+- **Diferença em categorias variadas:** As queixas aparecem em diferentes categorias de produtos – consoles/games, automotivo, móveis, beleza/saúde, eletrodomésticos, telefonia e informática/acessórios – indicando que o problema não se restringe a um tipo específico de mercadoria [R2] [R3] [R7] [R8].  
+
+Em todos os oito registros analisados, o cliente relata ter recebido um item que não corresponde ao que foi anunciado ou adquirido. Não há evidências que indiquem a ausência desse tipo de problema.",v3-2026-11-09,openai/gpt-oss-120b,1.0,0.125,1.0
+Q11,no_tema,ok,ok,True,0.915,40,30.3,atendimento e suporte da loja,"**Avaliação geral do atendimento e suporte**
+
+- **Atendimento considerado excelente ou muito bom** – Diversas avaliações destacam a qualidade do atendimento, usando termos como “Excelente atendimento” (R8), “Ótimo atendimento!” (R16), “Muito bem atendido” (R35) e “Bom atendimento” (R29) [​R8] [​R16] [​R35] [​R29].
+
+- **Confiança e recomendação** – Clientes afirmam que a loja é confiável e recomendam a compra: “Esta loja é de confiança” (R7), “Recomendo a loja” (R1, R5, R6) e “Gostei do atendimento” (R25) [​R7] [​R1] [​R5] [​R6] [​R25].
+
+- **Satisfação mesmo em notas mais baixas** – Mesmo nas avaliações com nota 4, o atendimento é elogiado (“Ótima loja”, R15; “Bom atendimento”, R26) [​R15] [​R26].
+
+- **Ausência de críticas ao suporte** – Nenhuma das evidências traz reclamações específicas sobre o suporte ao cliente; as críticas presentes referem‑se apenas a atrasos ou não‑entrega (ex.: R40, R37), não ao atendimento em si. [​R40] [​R37]
+
+**Resumo:** A maioria das avaliações que mencionam o atendimento descrevem-no como excelente, ótimo ou muito bom, reforçando a confiança na loja e a disposição dos clientes em recomendá‑la. Não há evidências de problemas ou insatisfações relacionadas ao suporte ao cliente.",v3-2026-11-09,openai/gpt-oss-120b,0.125,0.5,1.0
+Q12,no_tema,ok,ok,True,0.9178,40,21.0,dificuldade para cancelar pedido e receber reembolso,"**Cancelamento automático por falta de estoque** – Vários clientes tiveram o pedido cancelado sem aviso prévio porque o produto estava indisponível: “pedido foi cancelado automaticamente…”, “pedido foi cancelado 5 dias antes da entrega por indisponibilidade no estoque” e relatos semelhantes de falta de mercadoria [R1] [R2] [R5] [R11] [R15] [R23] [R29].
+
+**Demora ou ausência de reembolso** – A maior parte das reclamações aponta que o dinheiro não foi devolvido ou que o prazo está indefinido: “Aguardo reembolso!”, “não tive reembolso do meu dinheiro no meu cartão”, “Cadê meu reembolso?”, “ainda não fui reembolsado” e situações de cobrança ainda na fatura [R1] [R3] [R4] [R8] [R10] [R14] [R34] [R38] [R31] [R33] [R36] [R40].
+
+**Falta de comunicação / resposta da loja** – Clientes relatam e‑mails e protocolos sem retorno: “não retornaram os emails”, “não obtive resposta da empresa”, “não me retornam” e “não há resposta” [R6] [R12] [R18] [R19] [R28] [R30] [R37].
+
+**Cancelamento sem sucesso ou entrega indevida** – Em alguns casos o pedido foi cancelado, mas o produto foi entregue e cobrado, ou a loja insistiu na entrega: “Havia cancelado o pedido e mesmo assim foi entregue e cobrado”, “cancelamento do produto e o mesmo me foi entregue” e “insistiram em entregar” [R25] [R16] [R39] [R21].
+
+**Procedimento de reembolso complicado** – Quando o reembolso ocorre, o cliente relata exigências adicionais, como ir a uma agência bancária para retirar o valor [R40].
+
+**Alguns casos de reembolso concluído** – Há relatos isolados de reembolso já efetuado, embora o cliente ainda esteja insatisfeito com a falta do produto [R15] [R13].",v3-2026-11-09,openai/gpt-oss-120b,1.0,0.125,0.875
+Q13,no_tema,ok,ok,True,0.9497,40,25.5,"Entrega rápida, elogios à rapidez","**Sim, os clientes elogiam a rapidez da entrega.**  
+
+- Vários comentários ressaltam que o pedido chegou “rápido” ou “super rápido”, como em “Entrega rápida, super recomendo” [R1] e “entrega super rápida, Parabéns” [R10].  
+- A expressão “rapidez na entrega” aparece em diferentes avaliações, por exemplo “Rapidez na entrega , lucro rápido” [R11] e “Recomendo. Rapidez na entrega” [R24].  
+- Em diversas categorias (pet shop, cama mesa banho, utilidades domésticas, esporte lazer, etc.) o elogio à velocidade é recorrente: “Entrega rápida, produto bom Recomendo” [R9]; “Entrega rápida. Muito satisfeita” [R18]; “Entrega rápida dentro do prazo, super recomendo” [R34]; “Entrega rapida, muita eficiência. Recomendo” [R40].  
+- Mesmo avaliações com nota 4 mantêm o destaque positivo, como “Entrega rápida. recomendo!” [R36] e “Entrega rápida e eficiente” [R29].  
+
+Nenhuma das evidências apresentadas menciona lentidão ou atraso; todas enfatizam que a entrega foi feita dentro do prazo ou com rapidez. Portanto, o padrão nas avaliações fornecidas indica que os clientes reconhecem e elogiam a rapidez da entrega.",v3-2026-11-09,openai/gpt-oss-120b,1.0,0.875,0.75
+Q14,no_tema,ok,ok,True,0.9349,40,38.5,"embalagem ruim, produto chegou danificado","**Embalagem danificada ou violada** – Vários clientes receberam as caixas amassadas, violadas ou com pequenos danos, o que acabou comprometendo o produto: “caixa toda violada” [R3]; “embalagem chegou toda danificada” [R11]; “embalagem levemente danificada” [R24]; “parece que a embalagem foi tirada de um lixão” [R40].
+
+**Produto entregue sujo** – Há relatos de embalagens sujas que exigiram limpeza antes da abertura: “produto veio sujo e mal acabado” [R4]; “caixa suja, tive que usar panos para limpar” [R29].
+
+**Embalagem inadequada ao tipo de produto** – Alguns itens foram enviados em embalagens que não protegem o conteúdo, provocando danos: “embalagem inapropriada, pote do chá acabou danificado” [R32]; “produto entregue sem estar na embalagem adequada, o que danificou o produto” [R33].
+
+**Falta de sinalização de fragilidade** – A ausência de aviso de frágil foi citada como causa de avarias: “sem aviso de frágil, num papel pardo; pacote amassado nas pontas, peças quebradas” [R17].
+
+**Embalagem incompleta ou faltando peças** – Problemas na embalagem também incluíram a falta de componentes essenciais: “embalagem danificada, produto veio faltando uma porca (parafuso) para montagem” [R6].
+
+**Outros danos relacionados à embalagem** – Há menções de caixas estouradas que espalharam o conteúdo (adubo químico) [R30] e de embalagens que, apesar de entregues no prazo, chegaram com rachaduras no produto, indicando manuseio inadequado [R34].
+
+Em síntese, a maioria das críticas aponta **embalagens frágeis, sujas, violadas ou inadequadas**, que resultam em produtos danificados ou incompletos.",v3-2026-11-09,openai/gpt-oss-120b,0.625,0.25,0.375
+Q15,no_tema,ok,ok,True,0.9235,40,22.2,"frete caro, reclamação","**Sim, há diversas reclamações sobre o valor do frete.**  
+
+**Frete considerado caro ou muito caro:**  
+- “Frete caro” – R1, R5, R33, R34.  
+- “Frete muito caro” – R2, R4, R7, R27.  
+- “Frete caríssimo” – R20.  
+- “Frete alto demais” – R22; “Frete alto. Reduzir o valor do frete” – R18.  
+- “Frete caro . Apesar de entregar no prazo, demorou bem mais do que outras lojas” – R12.  
+- “so fica dificil comprar por causa do frete que e caro” – R34.  
+
+**Observação:** nenhuma das evidências traz elogios ou menções de que o frete foi barato ou satisfatório; todas as menções ao custo do frete são negativas.  
+
+Portanto, as avaliações mostram um padrão claro de insatisfação com o preço do frete.",v3-2026-11-09,openai/gpt-oss-120b,0.75,1.0,1.0
+Q16,filtro,ok,ok,True,0.8805,40,17.9,problemas recorrentes nas avaliações com nota baixa,"**Falta ou quantidade incorreta de produtos** – Vários clientes receberam menos itens que compraram ou quantidades divergentes na nota fiscal:  
+- Recebimento de apenas 1 de 2 canetas [ R4 ];  
+- 1 de 2 cortinas [ R3 ], [ R10 ], [ R19 ];  
+- 1 de 4 itens [ R15 ];  
+- 1 de 4 canecas [ R34 ];  
+- 1 de 2 vasos [ R16 ];  
+- 1 de 2 unidades de cortina [ R19 ];  
+- 1 de 4 unidades de balança [ R35 ];  
+- 1 de 2 unidades de ferramenta [ R9 ];  
+- 1 de 2 unidades de produto cancelado [ R26 ].
+
+**Nota fiscal com valores ou quantidades erradas** – Reclamações sobre NF divergente ou ausente:  
+- Valor muito menor que o pago [ R2 ];  
+- NF com quantidade errada (2 → 1) [ R33 ];  
+- NF rasurada ou sem valor correto [ R35 ];  
+- NF ausente ou inválida [ R23 ];  
+- Falta de NF em geral [ R12 ], [ R25 ];  
+- NF com valor totalmente divergente [ R38 ].
+
+**Entrega atrasada ou não realizada** – Atrasos e ausência de entrega são citados:  
+- Produto não recebido [ R7 ], [ R20 ], [ R21 ];  
+- Entrega não realizada e sem contato [ R24 ];  
+- Atraso de quase um mês [ R20 ];  
+- Atrasos sem resposta [ R31 ], [ R32 ];  
+- Produto entregue sem nota fiscal nem manual [ R22 ].
+
+**Produto errado ou com defeito** – Recebimento de item diferente ou com problema:  
+- Produto diferente do pedido [ R6 ], [ R37 ];  
+- Produto com defeito no cabo [ R27 ];  
+- Produto de péssima qualidade [ R28 ];  
+- Produto errado [ R30 ].
+
+**Dificuldade de contato e suporte** – Clientes relatam falta de resposta da central:  
+- E‑mails sem retorno [ R26 ], [ R29 ], [ R30 ];  
+- Telefone não funciona [ R29 ];  
+- Cancelamento impossível ou sem aviso [ R14 ], [ R17 ].
+
+Esses são os problemas mais recorrentes nas avaliações de nota baixa.",v3-2026-11-09,openai/gpt-oss-120b,0.875,0.625,0.875
+Q17,filtro,ok,ok,True,0.8836,40,39.5,"os clientes elogiam a qualidade e variedade dos produtos de cama, mesa e banho","**Qualidade e conforto do produto** – A maioria dos elogios destaca a boa qualidade, toque agradável e conforto ao dormir, além da elegância do item: “produto de qualidade, gostoso ao toque e confortável pra dormir” [R10]; “Produto de ótima qualidade e elegância” [R27]; “Roupa de cama de muito boa qualidade. Deixa o quarto lindo” [R32]; “O PRODUTO ESTÁ DENTRO DOS PADRÕES DE QUALIDADE, ATENDENDO MINHA EXPECTATIVA” [R40]; “produtos de qualidade” [R34].
+
+**Estética / beleza** – Clientes ressaltam o aspecto visual, o charme e a capacidade de deixar a cama ou o quarto mais bonito: “deu um charme lindo na cama” [R3]; “A colcha é muito bonita e destaca bem na cama” [R14]; “Produto maravilhoso deixa a cama bem mais confortável” (e visual) [R33]; “Achei a cortina linda e de boa qualidade” [R35]; “Gostei muito do produto, serviu certo na minha cama e ficou super bonita” [R1].
+
+**Entrega rápida e dentro do prazo** – Muitos elogiam a entrega antes ou exatamente no prazo combinado: “RECEBI A MERCADORIA MUITO BEM EMBALADA E DENTRO DO PRAZO” [R2]; “CHEGOU BEM ANTES DO PRAZO” [R11]; “ÓTIMO. PRODUTO ÓTIMO, CHEGOU BEM ANTES DA DATA PREVISTA” [R17]; “CHEGOU MUITO RÁPIDO!!!! … bem antes do prazo!” [R33]; “Entrega antes do prazo, adorei o produto” [R5].
+
+**Embalagem e atendimento da loja** – A boa embalagem e o atendimento são citados como diferenciais: “RECEBI A MERCADORIA MUITO BEM EMBALADA” [R2]; “Boa embalagem, Excelente atendimento” [R36]; “Gostei muito da loja, entregou antes do prazo estipulado!!” [R8]; “Recomendo a loja; produto como solicitado, entregue no prazo” [R21].
+
+Esses são os principais pontos positivos apontados pelos clientes na categoria **cama, mesa e banho**.",v3-2026-11-09,openai/gpt-oss-120b,0.5,0.75,0.75
+Q18,filtro,ok,ok,True,0.9357,40,27.1,"entrega atrasada, reclamações sobre atraso","**Demora geral na entrega** – Muitos clientes repetem que a entrega “demorou” ou “está atrasada” sem especificar outro problema [R1] [R4] [R12] [R13] [R30].
+
+**Atraso significativo / super atrasado** – Há relatos de atrasos “super” ou “enorme”, indicando que o prazo foi muito ultrapassado [R8] [R9] [R10] [R26].
+
+**Não recebimento do produto** – Alguns afirmam que o item não chegou nem após o prazo, muitas vezes sem nenhum contato da loja [R14] [R33] [R35] [R38].
+
+**Falta de comunicação / resposta** – Clientes reclamam da ausência de retorno ou de atendimento ao relatar o atraso [R8] [R37].
+
+**Impacto em projetos ou datas específicas**  
+- Atraso que prejudicou obra ou montagem [R15];  
+- Presente de aniversário que não chegou a tempo [R28].
+
+**Causas externas citadas** – Um cliente atribui o atraso à greve dos caminhoneiros [R17].
+
+**Problemas de rastreamento** – Dificuldade para localizar o pedido [R25].
+
+**Peso ou características do produto** – Comentário de que o produto era “pesado demais” e isso contribuiu para o atraso [R20].
+
+**Atitude da loja / falta de respeito** – Reclamações de falta de atenção e respeito ao cliente [R34].
+
+Esses são os principais temas identificados nas avaliações que apontam entregas atrasadas. Cada ponto está sustentado por pelo menos um comentário dos clientes.",v3-2026-11-09,openai/gpt-oss-120b,1.0,0.625,1.0
+Q19,filtro,ok,ok,True,0.9183,40,16.5,avaliação antes de receber o produto,"**Aguardando a entrega:** a maioria dos clientes que avaliou antes de receber o produto relata que ainda está esperando o envio ou a chegada do item — “aguardo entrega do produto” [R2]; “Ainda aguardo o produto” [R4]; “Estou aguardando o produto chegar” [R12]; “Estou esperando meu produto” [R26]; “Estou esperando o produto” [R27] etc.  
+
+**Frustração com atraso ou não‑entrega:** muitos enfatizam que o prazo já foi ultrapassado ou que o pedido nunca chegou — “até o momento não recebi o produto” [R5]; “Demora na entrega do produto” [R7]; “Ñ recebi o produto” [R10]; “Ñão recebi o produto adquirido” [R11]; “Atraso de entrega, 30 dias sem receber” [R31]; “PRODUTO NÃO RECEBIDO” (2 ocorrências) [R38].  
+
+**Impossibilidade de avaliar antes de receber:** alguns deixam claro que não podem dar uma avaliação justa enquanto não têm o item — “Não posso avaliar negativamente a loja antes de receber o produto” [R22]; “Só posso fazer avaliação depois que receber o meu produto!!!” [R40]; “Avaliar o quê se ainda não recebi o produto?” [R37].  
+
+**Intenção de avaliar ou recomendar após a entrega:** há quem já indique que fará a avaliação ou recomendará a loja assim que o produto chegar — “recomendo. estou esperando meu produto, depois faço a avaliação” [R33]; “Quando meu produto estiver entregue posso avaliar.” [R17].  
+
+Em resumo, os clientes que avaliam antes de receber o produto expressam principalmente (i) a expectativa de entrega, (ii) insatisfação com atrasos ou ausência de entrega, (iii) a impossibilidade de julgar o produto antes de recebê‑lo, e (iv) a promessa de avaliar ou recomendar após a chegada.",v3-2026-11-09,openai/gpt-oss-120b,0.75,0.25,0.375
+Q20,filtro,ok,ok,True,0.8932,40,43.5,reclamações frequentes em informática e acessórios,"**Atrasos e não‑entrega** – Muitos clientes reclamam que o pedido chega depois do prazo ou nem chega: “Ja enviei varios emails reclamando sobre a entrega do produto” [R1]; “TERRIVEL ESTE PROBLEMA DA ENTREGA” [R10]; “ATRASO NA ENTREGA” [R35]; “ENTREGA MUITO DEMORADA” [R31]; “Até a data de hoje não recebi meus produtos” [R38]; “Já entrei em contato várias vezes e não me dão retorno” [R39]; “informaram que o produto foi entregue em 24/3, não confirmo a informação” [R32].
+
+**Produto errado ou diferente do anunciado** – Recebimento de itens que não correspondem ao que foi comprado: “mesa infantil totalmente diferente” [R2]; “cabo HDMI e veio VGA” [R7]; “recebi produto original e recebi paralelos” [R11]; “mouse com fio, não sem fio, e não gamer” [R16]; “entregue em outra cor e modelo” [R33]; “produto genérico em vez de original” [R34]; “produto falso, embalagem rasgada” [R40].
+
+**Defeito ou avaria no produto** – Vários relatos de itens com falha ao chegar: “adaptador chegou com defeito” [R3]; “não lê DVDs e CDs” [R4]; “produto veio com defeito e não foi aceito pela impressora” [R9]; “teclas não funcionando” [R14]; “produto da foto não era igual, veio com defeito” [R15]; “toner veio quebrado, tinta espalhou” [R37]; “cabo USB com defeito, Windows não reconhece” [R36]; “produto quebrado mesmo entregue no prazo” [R28].
+
+**Produtos falsos ou de qualidade inferior** – Reclamações de itens falsificados ou recondicionados: “PRODUTO FALSO, cartao não funcionou” [R5]; “produto falso, tintas falsas” [R8]; “cartucho remanufaturado” [R21]; “produto falso, contato USB arranhado” [R40].
+
+**Dificuldade de troca/devolução e atendimento** – Problemas ao registrar reclamações ou obter suporte: “site travava no momento de finalização da reclamação” [R4]; “não consigo registrar a solicitação no SITE” [R18]; “central de atendimento muito ruim, não respondo” [R22]; “atendimento horroroso, só acesso a reclamações por site” [R38]; “não obtive resposta ao solicitar devolução” [R34]; “solicitei reembolso do dinheiro” [R30].
+
+Esses são os principais padrões de reclamação em informática e acessórios nas avaliações analisadas.",v3-2026-11-09,openai/gpt-oss-120b,0.625,0.875,0.875
+Q21,fora_do_escopo,fora_do_escopo,fora_do_escopo,True,0.8763,0,8.0,qual o preço do iPhone hoje,Essa pergunta está fora do escopo da base: ela só tem avaliações de clientes da Olist (2016-2018).,v3-2026-11-09,openai/gpt-oss-120b,,,
+Q22,fora_do_escopo,fora_do_escopo,fora_do_escopo,True,0.8653,0,3.2,previsão do tempo para amanhã em São Paulo,Essa pergunta está fora do escopo da base: ela só tem avaliações de clientes da Olist (2016-2018).,v3-2026-11-09,openai/gpt-oss-120b,,,
+Q23,fora_do_escopo,fora_do_escopo,fora_do_escopo,True,0.8289,0,0.8,quem ganhou a copa do mundo de 2022,Essa pergunta está fora do escopo da base: ela só tem avaliações de clientes da Olist (2016-2018).,v3-2026-11-09,openai/gpt-oss-120b,,,
+Q24,fora_do_escopo,fora_do_escopo,fora_do_escopo,True,0.8762,0,0.5,receita de bolo de cenoura,Essa pergunta está fora do escopo da base: ela só tem avaliações de clientes da Olist (2016-2018).,v3-2026-11-09,openai/gpt-oss-120b,,,
+Q25,fora_do_escopo,fora_do_escopo,fora_do_escopo,True,0.9047,0,8.8,atendimento da Amazon insatisfatório,Essa pergunta está fora do escopo da base: ela só tem avaliações de clientes da Olist (2016-2018).,v3-2026-11-09,openai/gpt-oss-120b,,,
+Q26,sem_evidencia,sem_evidencia,sem_evidencia,True,0.8948,40,16.0,opinião sobre pagamento via PIX,"SEM_EVIDENCIA  
+Não há avaliações que abordem especificamente o pagamento via PIX.",v3-2026-11-09,openai/gpt-oss-120b,,,
+Q27,sem_evidencia,sem_evidencia,ok,False,0.9037,40,38.0,chatbot de atendimento ruim,"**Avaliação do chatbot:**  
+
+- **Frustração com a falta de atendimento humano:** um cliente relata que “não existe um tel. p/ falar com um atendente, só um robô do outro lado da linha” e que a espera de 48 h úteis para resposta é “muita coisa” [R16].  
+- **Atendimento exclusivamente eletrônico:** outro comentário indica que o suporte é “somente eletrônico”, obrigando o cliente a aguardar “boa vontade da loja para entrar em contato” [R31].  
+- **Canais de atendimento considerados horríveis:** há ainda a queixa de que “os canais de atendimento são horríveis” e que ninguém resolve o problema, sugerindo insatisfação com o canal automatizado usado [R18].
+
+**Resumo:** As poucas menções ao chatbot apontam para uma percepção predominantemente negativa, destacando a ausência de contato humano, longas esperas e a sensação de que o suporte automatizado não resolve as demandas. Não há evidências de avaliações positivas ou neutras sobre o chatbot.",v3-2026-11-09,openai/gpt-oss-120b,,,
+Q28,sem_evidencia,sem_evidencia,sem_evidencia,True,0.9041,40,14.8,"cashback não funciona, reclamação","SEM_EVIDENCIA  
+Não há avaliações que mencionem ou critiquem o programa de cashback.",v3-2026-11-09,openai/gpt-oss-120b,,,
+Q29,sem_evidencia,sem_evidencia,sem_evidencia,True,0.8771,8,16.6,pagamento com criptomoeda,"SEM_EVIDENCIA  
+Não há nenhuma avaliação que mencione pagamento em criptomoeda.",v3-2026-11-09,openai/gpt-oss-120b,,,
+Q30,sem_evidencia,sem_evidencia,fora_do_escopo,True,0.8636,0,0.9,experiência de realidade virtual para provar roupas,Essa pergunta está fora do escopo da base: ela só tem avaliações de clientes da Olist (2016-2018).,v3-2026-11-09,openai/gpt-oss-120b,,,
