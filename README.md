@@ -74,11 +74,11 @@ Pergunta ──► 1. reescrita + escopo (LLM, JSON) ──► fora do escopo? r
 | Groq (`openai/gpt-oss-120b`) | Reescrita da pergunta e geração | Modelo aberto, bom em português, rápido, com plano gratuito. Trocável pelo Gemini (`LLM_PROVIDER=gemini`) |
 | Streamlit | Interface | Demonstração com filtros e tabela de evidências em poucas linhas |
 | rank-bm25 | Baseline | Comparar a busca semântica com a busca por palavra-chave |
-| pytest | Testes | 52 testes, com modelos falsos (rodam sem internet nem GPU) |
+| pytest | Testes | 59 testes, com modelos falsos (rodam sem internet nem GPU) |
 
 ## Preparação da base de conhecimento
 
-Fonte: [Brazilian E-Commerce Public Dataset by Olist](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce) (99.224 avaliações). As definições exatas de cada campo estão em [`docs/definicoes.md`](docs/definicoes.md).
+Fonte: [Brazilian E-Commerce Public Dataset by Olist](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce) (99.224 avaliações), publicado pela Olist sob a licença [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). Os dados não estão neste repositório: baixe-os do Kaggle (ver [Como reproduzir](#como-reproduzir)). Os arquivos de `eval/` trazem trechos de avaliações, com o mesmo crédito e a mesma licença. As definições exatas de cada campo estão em [`docs/definicoes.md`](docs/definicoes.md).
 
 | Decisão | O que foi feito | Justificativa |
 |---|---|---|
@@ -118,7 +118,7 @@ Por que quatro? A avaliação mostrou que **a semelhança sozinha não separa** 
 
 ## Metadados (desafio adicional)
 
-Filtros disponíveis na tela e na busca: **nota**, **categoria do produto**, **situação da entrega** (no prazo, atrasado, não entregue), **"avaliou antes de receber"** e **período**.
+Filtros disponíveis na tela e na busca: **nota**, **categoria do produto**, **situação da entrega** (no prazo, atrasado, não entregue), **"respondeu antes de receber"** e **período**.
 
 Campos criados por nós:
 - `delivery_status` e `days_late`: comparam a data real de entrega com a prevista, só pela data.
@@ -232,10 +232,17 @@ Pergunta fora do escopo (Q21). Status: `fora_do_escopo`.
 Requisitos: Python 3.10 ou superior, cerca de 4 GB livres e uma chave gratuita do [Groq](https://console.groq.com) (ou do Gemini). Não precisa de GPU.
 
 ```bash
-git clone <este repositório> && cd voc-rag
-python -m venv .venv && .venv\Scripts\activate          # Linux/Mac: source .venv/bin/activate
+git clone https://github.com/rodrigueshcluiz/tech-challenge-fase4.git
+cd tech-challenge-fase4
+python -m venv .venv
+```
+
+Ative o ambiente: no Windows, `.venv\Scripts\activate`; no Linux ou Mac, `source .venv/bin/activate`. Depois instale:
+
+```bash
 pip install torch --index-url https://download.pytorch.org/whl/cpu
-pip install -r requirements.txt && pip install -e .
+pip install -r requirements.txt
+pip install -e .
 ```
 
 1. Baixe a base do [Kaggle](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce) e extraia os CSVs em `data/raw/`.
@@ -243,10 +250,10 @@ pip install -r requirements.txt && pip install -e .
 3. Rode:
 
 ```bash
-python -m pytest -q                      # 45 testes, sem internet
+python -m pytest -q                      # testes com modelos falsos, sem internet
 python -m voc_rag.cli base               # etapa 1: data/processed/documents.parquet
 python -m voc_rag.cli indice             # embeddings + Chroma (~7 min em CPU)
-python -m voc_rag.cli testar-gemini      # testa o LLM configurado
+python -m voc_rag.cli testar-llm         # testa o LLM configurado (não mostra a chave)
 streamlit run app.py                     # interface
 python -m voc_rag.evaluate 0.85          # avaliação
 ```
