@@ -1,0 +1,9 @@
+data/raw/
+data/chroma/
+.env
+__pycache__/
+.venv/
+.pytest_cache/
+data/processed/
+eval/resultados_parcial.csv
+*.egg-info/
