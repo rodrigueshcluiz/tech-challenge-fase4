@@ -5,7 +5,11 @@ e o texto das avaliações citadas. Quem confere marca se a frase é sustentada 
 As evidências são buscadas de novo no índice com a mesma busca e os mesmos filtros: a busca é
 determinística, então [R1], [R2]... são as mesmas que o modelo viu. Não chama o LLM.
 
-Uso: python -m voc_rag.fidelidade  ->  eval/fidelidade.csv (abre no Excel)
+Uso: python -m voc_rag.fidelidade             ->  gera eval/fidelidade.csv (abre no Excel)
+     python -m voc_rag.fidelidade --calcular  ->  lê a planilha preenchida e calcula a fidelidade
+
+Fidelidade = (sim + 0,5 x parcial) / (sim + parcial + nao). Frases marcadas "na" (título, ligação,
+frase sem afirmação) ficam fora da conta; frases em branco são contadas como pendentes.
 """
 import json
 import re
@@ -40,7 +44,33 @@ def amostra(res: pd.DataFrame, n=10) -> pd.DataFrame:
     return ok.iloc[:: max(1, len(ok) // n)].head(n)  # espalhada pelas perguntas, sempre a mesma
 
 
+MARCAS = {"sim": "sim", "parcial": "parcial", "nao": "nao", "não": "nao", "na": "na", "n/a": "na"}
+
+
+def calcular(planilha: pd.DataFrame) -> dict:
+    """Conta as marcações e calcula a fidelidade geral e por resposta."""
+    m = planilha[COLUNAS[6]].fillna("").astype(str).str.strip().str.lower().map(lambda x: MARCAS.get(x, "" if x == "" else "invalida"))
+    conta = m.value_counts().to_dict()
+    validas = m.isin(["sim", "parcial", "nao"])
+    pontos = m.map({"sim": 1.0, "parcial": 0.5, "nao": 0.0})
+    por_resposta = pontos[validas].groupby(planilha.loc[validas, "id"]).mean().round(3).to_dict()
+    total = int(validas.sum())
+    return {"sim": conta.get("sim", 0), "parcial": conta.get("parcial", 0), "nao": conta.get("nao", 0),
+            "na": conta.get("na", 0), "pendentes": conta.get("", 0), "invalidas": conta.get("invalida", 0),
+            "fidelidade": round(float(pontos[validas].mean()), 3) if total else None, "por_resposta": por_resposta}
+
+
 if __name__ == "__main__":
+    import sys
+
+    if "--calcular" in sys.argv:
+        r = calcular(pd.read_csv("eval/fidelidade.csv", sep=";", encoding="utf-8-sig"))
+        print(f"sim {r['sim']} | parcial {r['parcial']} | nao {r['nao']} | na {r['na']} | pendentes {r['pendentes']} | inválidas {r['invalidas']}")
+        print(f"Fidelidade: {r['fidelidade']}")
+        for q, v in r["por_resposta"].items():
+            print(f"  {q}: {v}")
+        sys.exit(0)
+
     from voc_rag.cli import CHROMA
     from voc_rag.embeddings import E5Embedder
     from voc_rag.filters import Filters
