@@ -277,5 +277,7 @@ Variáveis opcionais no `.env`: `LLM_PROVIDER=groq|gemini`, `GROQ_MODEL`, `GEMIN
 - A base é de 2016 a 2018: assuntos atuais (PIX, por exemplo) são recusados por falta de evidência.
 - Clientes insatisfeitos escrevem mais, então as respostas tendem a destacar problemas.
 - A precisão é medida por um padrão de palavras por pergunta, uma aproximação. Uma conferência manual de fidelidade (*faithfulness*) complementa a métrica: cada frase de uma amostra de respostas é comparada com as evidências que ela cita (`python -m voc_rag.fidelidade` gera a planilha e `python -m voc_rag.fidelidade --calcular` calcula o resultado: sim vale 1, parcial 0,5, não 0, e "na" fica fora da conta).
-- A recusa de perguntas sem evidência depende do LLM: em uma das três rodadas, uma pergunta sem evidência passou.
+- A recusa de perguntas sem evidência depende do LLM: em uma das quatro rodadas (a 3ª), uma pergunta sem evidência passou.
+- A trava de citações confere se o número citado existe, mas não se o trecho entre aspas é o daquela avaliação. Na Q15 o modelo deslocou as citações uma posição, e só a conferência manual pegou.
+- A busca pode trazer só um lado do tema: na Q11 (atendimento) vieram só elogios, e a resposta concluiu que não havia críticas.
 - No plano gratuito do Groq há um limite por minuto, e o sistema espera e tenta de novo quando bate nele.
