@@ -233,7 +233,7 @@ Pergunta fora do escopo (Q21). Status: `fora_do_escopo`.
 
 ## Como reproduzir
 
-Requisitos: Python 3.11 ou superior (testado com 3.12.10), cerca de 4 GB livres e uma chave gratuita do [Groq](https://console.groq.com) (ou do Gemini). Não precisa de GPU.
+Requisitos: Python 3.11 ou 3.12 (testado com 3.12.10; versões mais novas podem não ter todas as bibliotecas prontas), cerca de 4 GB livres e uma chave gratuita do [Groq](https://console.groq.com) (ou do Gemini). Não precisa de GPU.
 
 ```bash
 git clone https://github.com/rodrigueshcluiz/tech-challenge-fase4.git
