@@ -1,4 +1,4 @@
-"""Contagens sobre o recorte inteiro (pandas), para perguntas amplas. O Gemini não calcula números."""
+"""Contagens sobre o recorte inteiro (pandas), para perguntas amplas. O LLM não calcula números."""
 import pandas as pd
 
 

@@ -22,7 +22,7 @@ def rewrite(question, llm):
     try:
         r = json.loads(llm(REWRITE_SYSTEM, question, json_mode=True))
         return bool(r["in_scope"]), bool(r["broad"]), str(r["query"]) or question
-    except Exception:  # Gemini fora do ar ou JSON quebrado: segue com a pergunta original
+    except Exception:  # LLM fora do ar ou JSON quebrado: segue com a pergunta original
         return True, bool(AMPLA.search(question)), question
 
 

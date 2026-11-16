@@ -1,4 +1,4 @@
-"""Etapa 4: monta o contexto, as instruções para o Gemini e confere as citações."""
+"""Etapa 4: monta o contexto, as instruções para o LLM e confere as citações."""
 import re
 
 PROMPT_VERSION = "v4-2026-11-10"  # muda sempre que o prompt mudar; vai junto nos resultados da avaliação

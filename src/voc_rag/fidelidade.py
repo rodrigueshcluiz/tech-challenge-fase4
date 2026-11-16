@@ -2,8 +2,8 @@
 
 Para cada resposta "ok" da amostra, quebra o texto em frases, mostra as citações de cada frase
 e o texto das avaliações citadas. Quem confere marca se a frase é sustentada (sim / parcial / não).
-As evidências são buscadas de novo no índice com a mesma busca e os mesmos filtros: a busca é
-determinística, então [R1], [R2]... são as mesmas que o modelo viu. Não chama o LLM.
+As evidências são buscadas de novo no índice com a mesma busca, os mesmos filtros e o mesmo k da
+resposta, então [R1], [R2]... são as mesmas que o modelo viu. Não chama o LLM.
 
 Uso: python -m voc_rag.fidelidade             ->  gera eval/fidelidade.csv (abre no Excel)
      python -m voc_rag.fidelidade --calcular  ->  lê a planilha preenchida e calcula a fidelidade
@@ -83,7 +83,7 @@ if __name__ == "__main__":
     linhas = []
     for _, r in amostra(res).iterrows():
         f = Filters(**qs[r.id].get("filtros", {}))
-        ev = retrieve(col, emb, r.busca, f, k=40, min_sim=0).evidences  # as primeiras são as mesmas de k=8
+        ev = retrieve(col, emb, r.busca, f, k=int(r.n_evid), min_sim=0).evidences  # o mesmo k da resposta: com k maior a busca pode mudar a ordem
         linhas += linhas_da_resposta(r.id, qs[r.id]["pergunta"], r.resposta, ev)
     pd.DataFrame(linhas, columns=COLUNAS).to_csv("eval/fidelidade.csv", index=False, sep=";", encoding="utf-8-sig")
     print(f"{len(linhas)} frases de {res.pipe(amostra).shape[0]} respostas -> eval/fidelidade.csv")

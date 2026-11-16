@@ -95,12 +95,12 @@ Fonte: [Brazilian E-Commerce Public Dataset by Olist](https://www.kaggle.com/dat
 
 ## Pipeline RAG
 
-1. **Transformação da pergunta.** O LLM devolve um JSON com: a pergunta está no escopo? é ampla ("principais", "padrões")? e uma versão reescrita no vocabulário de um cliente ("o produto não chegou, atraso na entrega"). A reescrita aproxima a pergunta do estilo dos comentários, numa ideia parecida com o HyDE (*Hypothetical Document Embeddings*): buscamos com um texto que se parece com a resposta, e não com a pergunta. A mesma chamada faz o roteamento: decide se a pergunta vai para a busca, para as estatísticas ou para a recusa. Se o JSON vier quebrado, o sistema segue com a pergunta original e uma regra simples para "ampla".
+1. **Transformação da pergunta.** O LLM devolve um JSON com: a pergunta está no escopo? é ampla ("principais", "padrões")? e uma versão curta da pergunta para a busca. A ideia original era parecida com o HyDE (*Hypothetical Document Embeddings*): buscar com um texto no vocabulário do cliente. Na prática, com o prompt v4 (que pede tom neutro), a reescrita virou uma condensação da pergunta ("principais problemas relatados pelos clientes", "embalagem dos produtos"), e não um documento hipotético. A mesma chamada faz o roteamento: decide se a pergunta vai para a busca, para as estatísticas ou para a recusa. Se o JSON vier quebrado, o sistema segue com a pergunta original e uma regra simples para "ampla".
 2. **Recuperação semântica** com os filtros escolhidos na tela, aplicados dentro do Chroma.
 3. **Seleção.** A busca amplia a janela até achar *k* textos distintos (8 para perguntas específicas, 40 para amplas). Textos idênticos viram uma evidência, com a contagem de quantas vezes aparecem no recorte filtrado.
 4. **Contexto.** Cada evidência entra numerada, com metadados: `[R1] (nota 1 | nao_entregue | telefonia | 2018-01 | 3x) texto`. Em perguntas amplas entra também um bloco de **estatísticas exatas** do recorte inteiro, calculadas em pandas. O modelo é proibido de calcular porcentagens a partir da amostra: os números só podem vir desse bloco.
-5. **Geração** com regras explícitas: usar só as evidências, citar cada afirmação, não inventar, agrupar por tema, até 250 palavras. O prompt traz um exemplo de resposta bem citada (*few-shot*) e tem versão (`PROMPT_VERSION`, gravada em cada linha da avaliação).
-   - **Segurança contra *prompt injection*:** as avaliações são texto escrito por clientes. Elas entram entre as marcas `<evidencias>` e `</evidencias>`, o prompt diz que esse conteúdo é dado e nunca instrução, e o código neutraliza qualquer marca falsa escrita dentro de uma avaliação.
+5. **Geração** com regras explícitas: usar só as evidências, citar cada afirmação, não inventar, agrupar por tema, até 250 palavras (um pedido ao modelo, não uma trava: 6 das 20 respostas da rodada 4 passaram disso). O prompt traz um exemplo de resposta bem citada (*few-shot*) e tem versão (`PROMPT_VERSION`, gravada em cada linha da avaliação).
+   - **Segurança contra *prompt injection*:** as avaliações são texto escrito por clientes. Elas entram entre as marcas `<evidencias>` e `</evidencias>`, o prompt diz que esse conteúdo é dado e nunca instrução, e o código neutraliza marcas falsas (`<evidencias>` e variações com espaço, acento ou maiúscula) escritas dentro de uma avaliação. Não há pergunta adversária no conjunto de avaliação.
 6. **Conferência.** O código lê as citações da resposta e descarta a resposta se ela não citar nada ou citar uma evidência que não existe.
 
 ## Perguntas sem evidência e fora do escopo
@@ -122,7 +122,7 @@ Filtros disponíveis na tela e na busca: **nota**, **categoria do produto**, **s
 
 Campos criados por nós:
 - `delivery_status` e `days_late`: comparam a data real de entrega com a prevista, só pela data.
-- `reviewed_before_delivery`: 4.721 clientes (nota média 1,6) responderam a pesquisa antes de o produto chegar. A data usada é a da resposta (`review_answer_timestamp`), e não a do envio da pesquisa (`review_creation_date`). É um recorte forte para entender a ansiedade com prazo.
+- `reviewed_before_delivery`: 4.721 avaliações (nota média 1,6) foram respondidas antes de o produto chegar. Esse número inclui os 1.889 pedidos que nunca foram entregues; entre os entregues, são 2.832. A data usada é a da resposta (`review_answer_timestamp`), e não a do envio da pesquisa (`review_creation_date`). É um recorte forte para entender a ansiedade com prazo.
 
 | Situação | Avaliações | Nota média |
 |---|---|---|
@@ -130,7 +130,7 @@ Campos criados por nós:
 | Atrasado | 3.829 | 1,9 |
 | Não entregue | 1.889 | 1,5 |
 
-Como os metadados melhoram a recuperação: perguntas como "o que reclamam os clientes de telefonia com nota baixa?" buscam só dentro do recorte certo, em vez de esperar que a semelhança do texto acerte a categoria e a nota. As estatísticas das perguntas amplas usam o mesmo filtro, então os números batem com o que foi buscado.
+Como os metadados melhoram a recuperação: com os filtros escolhidos na tela (o sistema não os tira da pergunta), uma pergunta como "o que reclamam os clientes de telefonia com nota baixa?" busca só dentro do recorte certo, em vez de esperar que a semelhança do texto acerte a categoria e a nota. As estatísticas das perguntas amplas usam o mesmo filtro, então os números batem com o que foi buscado.
 
 ## Avaliação
 
@@ -149,27 +149,29 @@ As 30 perguntas funcionam como um *golden set*, e a precisão das evidências é
 | Precisão das evidências, RAG | 0,85 | 0,86 | 0,81 | **0,87** |
 | Precisão, BM25 com a pergunta original | 0,49 | 0,49 | 0,49 | 0,50 |
 | Precisão, BM25 com a pergunta reescrita | – | 0,80 (recalculada) | 0,83 | **0,71** |
+| Precisão, busca semântica com a pergunta original | – | – | – | 0,84 |
 | Perguntas válidas respondidas | 14/20 | 20/20 | 20/20 | 20/20 |
 | Recusas corretas | 6/10 | 10/10 | 9/10 | 10/10 |
 | Respostas que usaram as estatísticas | – | 6 de 21 | 0 de 21 | 13 de 16 amplas |
 | Recusas pela trava de semelhança | – | – | – | 0 |
 | Tempo médio por pergunta | 17 s | 21 s | 20 s | 18 s |
 
-Rodada 1: limite de semelhança 0,80. Rodadas 2 a 4: 0,85. Todas usam o Groq (`openai/gpt-oss-120b`); as rodadas 1 a 3 são de 09/11/2026 e a 4 é de 10/11/2026.
+Rodada 1: limite de semelhança 0,80, e a precisão é a média de só 14 respostas (as 6 recusadas por engano ficam fora). Rodadas 2 a 4: 0,85. O "0,80 (recalculada)" da rodada 2 foi calculado depois, com a pergunta reescrita gravada no CSV, e não tem arquivo próprio. Todas usam o Groq (`openai/gpt-oss-120b`); as rodadas 1 a 3 são de 09/11/2026 e a 4 é de 10/11/2026.
 
 **Atenção à comparação:** nas rodadas 1 a 3 a precisão era medida só nas 8 primeiras evidências. Na rodada 4 ela passou a ser medida em **todas** as evidências que o modelo recebe (40 nas perguntas amplas), e o BM25 passou a buscar o mesmo número. Por isso a rodada 4 não é diretamente comparável às anteriores. Os resultados da rodada 3 ficaram guardados em `eval/rodada3_resultados.md` e `eval/rodada3_resultados.csv`.
 
 **O que os números dizem, com honestidade:**
-- **A reescrita da pergunta ajuda muito.** Com a pergunta original, o BM25 fica em 0,50. Com a mesma pergunta reescrita que o RAG usa, ele sobe para 0,71. A comparação justa é entre as duas buscas com a mesma entrada.
-- **Com 40 evidências, a busca densa se destaca:** 0,87 contra 0,71 do BM25 com a pergunta reescrita. Nas 8 primeiras (rodadas 2 e 3) as duas ficavam próximas; a diferença aparece mais fundo na lista, onde a busca por palavra começa a trazer textos que só compartilham termos.
-- **A métrica favorece a busca por palavra**, porque mede relevância por um padrão de palavras. Ela também pode errar: na Q14 (embalagem) a precisão do RAG foi 0,25, provavelmente porque muitas avaliações falam de embalagem com palavras que o padrão não pega (não conferimos uma a uma). Uma avaliação humana tende a valorizar mais a busca densa, que acha sinônimos ("não veio", "nunca recebi").
+- **O ganho vem principalmente da busca semântica.** Medimos as quatro combinações na rodada 4 (`python -m voc_rag.sem_reescrita`, sem chamar o LLM, em `eval/sem_reescrita.csv`): busca semântica 0,84 com a pergunta original e 0,87 com a reescrita; BM25 0,50 com a original e 0,71 com a reescrita. A reescrita ajuda muito a busca por palavra (+0,21), mas pouco a semântica (+0,03 na média), que já entende a pergunta como ela vem.
+- **A reescrita ajuda em umas perguntas e atrapalha em outras.** Na busca semântica ela melhora muito a Q05 (qualidade, 0,45 para 0,75) e a Q11 (atendimento, 0,48 para 0,98), mas piora a Q14 (embalagem, 0,53 para 0,25), a Q04 (0,98 para 0,83) e a Q19 (0,75 para 0,63). Com 20 perguntas, a diferença média de 0,03 está dentro do ruído.
+- **Com 40 evidências, a busca semântica se destaca do BM25:** 0,87 contra 0,71, as duas com a pergunta reescrita. A diferença aparece mais fundo na lista, onde a busca por palavra começa a trazer textos que só compartilham termos.
+- **A métrica favorece a busca por palavra**, porque mede relevância por um padrão de palavras. Ela também pode errar: na Q14 (embalagem) a precisão do RAG foi 0,25, e com a pergunta original seria 0,53; parte disso pode ser o padrão de palavras, que não pega todas as formas de falar de embalagem (não conferimos uma a uma). Uma avaliação humana tende a valorizar mais a busca densa, que acha sinônimos ("não veio", "nunca recebi").
 - **As estatísticas agora entram na resposta.** Na rodada 3 nenhuma resposta usava o bloco de estatísticas. Com o prompt v4, 13 das 16 perguntas amplas começam com uma linha "Panorama:" citando [Estatísticas]. As 3 que não usaram (Q08, Q14 e Q18) responderam só com as avaliações.
 - **A trava de semelhança nunca disparou** nas 30 perguntas: as recusas vieram da trava de escopo (5) e da leitura pelo modelo, `SEM_EVIDENCIA` (5). A menor semelhança de uma pergunta válida foi 0,886 e a maior de uma sem evidência foi 0,896, então nenhum limite separa os dois grupos. A trava fica como proteção barata, mas quem decide de fato é o modelo.
 - **Variação entre rodadas.** O LLM não é determinístico e são só 20 perguntas válidas, então diferenças de ±0,05 são ruído.
 - **Erro da rodada 3, e o que ele ensina:** a pergunta sobre chatbot devia ser recusada, mas foi respondida. Ao ler a resposta, vimos que o modelo achou reclamações reais sobre atendimento automático ("só um robô do outro lado da linha") e as citou corretamente. O rótulo "sem evidência" tinha sido conferido só pela palavra "chatbot", então o erro é em parte do gabarito, e não só do sistema. A lição é que um *golden set* também precisa de revisão. Na rodada 4 a mesma pergunta foi recusada.
-- **Limitação: viés da busca para elogios.** Na Q11 (atendimento e suporte), todas as evidências citadas na resposta são elogios, e ela termina dizendo que "não há evidências de críticas" ao atendimento, o que é falso para a base inteira (a Q01 mostra muitas reclamações de contato). A resposta é fiel às evidências que recebeu, mas não à base. Isso acontece porque a pergunta é neutra e os elogios curtos ("excelente atendimento") são os textos mais parecidos com ela. Uma correção seria buscar separadamente elogios e reclamações nas perguntas amplas.
-- **Fidelidade (conferência manual):** 10 respostas da rodada 4, quebradas em 135 frases, foram conferidas uma a uma contra as avaliações citadas (`eval/fidelidade.csv`). Resultado: **96%** (120 frases sustentadas, 2 parciais e 4 não sustentadas; 9 sem afirmação a conferir, como títulos e as linhas de estatística). Fidelidade = (sim + 0,5 × parcial) / (sim + parcial + não). Os erros mais instrutivos:
-    - **Citação deslocada (Q15):** a partir da R7, o modelo pôs o texto de uma avaliação com o número da seguinte ("Só não coerente o valor do frete" é a R8, mas veio como R7). Os trechos existem na base, mas as citações erradas não sustentam a frase. A conferência de citações só checa se o número existe, e não se o trecho bate. Uma trava simples seria comparar cada trecho entre aspas com o texto da evidência citada.
+- **Limitação: viés da busca para elogios.** Na Q11 (atendimento e suporte), todas as evidências citadas na resposta são elogios, e ela termina dizendo que "não há evidências de críticas" ao atendimento, o que é falso para a base inteira (a Q01 mostra muitas reclamações de contato). Na conferência de fidelidade essas duas frases foram marcadas como não sustentadas: as evidências citadas não provam a ausência de críticas, e "acima das expectativas" não aparece nelas. Isso acontece porque a pergunta é neutra e os elogios curtos ("excelente atendimento") são os textos mais parecidos com ela. Uma correção seria buscar separadamente elogios e reclamações nas perguntas amplas.
+- **Fidelidade (conferência manual):** 10 respostas da rodada 4, quebradas em 135 frases, foram conferidas uma a uma contra as avaliações citadas (`eval/fidelidade.csv`). Resultado: **98%** (123 frases sustentadas, 1 parcial e 2 não sustentadas; 9 sem afirmação a conferir, como títulos e as linhas de estatística). Fidelidade = (sim + 0,5 × parcial) / (sim + parcial + não). As 7 linhas "Panorama" ficaram fora porque os números vêm do pandas; como algumas trazem uma interpretação junto ("indicando que…"), se contassem como parciais o resultado seria 95,5%. Uma só pessoa conferiu a planilha. Os erros mais instrutivos:
+    - **A própria planilha errou (Q15), e a revisão pegou:** na primeira conferência, a Q15 parecia ter citações deslocadas a partir da R7. Uma revisão independente desconfiou, porque as 8 evidências que o modelo viu tinham todas a palavra "frete" (precisão 1,0). A causa era a planilha: ela refazia a busca pedindo 40 evidências, e a busca maior trazia um texto a mais na 7ª posição ("FALTOU ITENS NA ENTREGA"), o que empurrava a numeração. Com as mesmas 8 evidências da resposta, as citações do modelo estavam certas. A planilha foi corrigida para usar o mesmo número de evidências da resposta, e as 3 frases foram remarcadas.
     - **Generalização sem base (Q11 e Q05):** frases como "não há críticas" e "a maioria elogia" vão além do que as evidências citadas mostram.
     - **Limite da própria planilha:** o programa quebra frases no ponto, inclusive dentro de aspas, então algumas citações aparecem cortadas em duas linhas.
 - **Próximo passo natural:** busca híbrida, juntando a densa e o BM25 por *Reciprocal Rank Fusion*.
@@ -182,7 +184,7 @@ Para reproduzir: `python -m voc_rag.evaluate 0.85`, que gera `eval/resultados.md
 
 ## Exemplos de perguntas e respostas
 
-Respostas da rodada 4 (prompt v4-2026-11-10), copiadas de `eval/resultados.csv` sem edição.
+Respostas da rodada 4 (prompt v4-2026-11-10), copiadas de `eval/resultados.csv` sem edição. Atenção a uma leitura do modelo nas linhas "Panorama": quando ele escreve que "9,1% das avaliações apontam atraso", o número vem do metadado de entrega do pedido, e não do que o cliente escreveu.
 
 ### Quais são os principais problemas relatados pelos clientes em suas avaliações?
 
@@ -276,8 +278,8 @@ Variáveis opcionais no `.env`: `LLM_PROVIDER=groq|gemini`, `GROQ_MODEL`, `GEMIN
 **Limitações**
 - A base é de 2016 a 2018: assuntos atuais (PIX, por exemplo) são recusados por falta de evidência.
 - Clientes insatisfeitos escrevem mais, então as respostas tendem a destacar problemas.
-- A precisão é medida por um padrão de palavras por pergunta, uma aproximação. Uma conferência manual de fidelidade (*faithfulness*) complementa a métrica: cada frase de uma amostra de respostas é comparada com as evidências que ela cita (`python -m voc_rag.fidelidade` gera a planilha e `python -m voc_rag.fidelidade --calcular` calcula o resultado: sim vale 1, parcial 0,5, não 0, e "na" fica fora da conta).
+- A precisão é medida por um padrão de palavras por pergunta, uma aproximação. Ela também depende do recorte: nas perguntas com filtro, de 70% a 78% de todo o recorte já casa com o padrão (Q16, Q17, Q18 e Q20), então uma precisão de 0,9 ali diz pouco. O BM25 usa as palavras como vêm, sem tirar palavras vazias. Uma conferência manual de fidelidade (*faithfulness*) complementa a métrica: cada frase de uma amostra de respostas é comparada com as evidências que ela cita (`python -m voc_rag.fidelidade` gera a planilha e `python -m voc_rag.fidelidade --calcular` calcula o resultado: sim vale 1, parcial 0,5, não 0, e "na" fica fora da conta).
 - A recusa de perguntas sem evidência depende do LLM: em uma das quatro rodadas (a 3ª), uma pergunta sem evidência passou.
-- A trava de citações confere se o número citado existe, mas não se o trecho entre aspas é o daquela avaliação. Na Q15 o modelo deslocou as citações uma posição, e só a conferência manual pegou.
+- A trava de citações confere se o número citado existe, mas não se o trecho entre aspas é o daquela avaliação. Uma trava que compare o trecho com o texto citado seria um bom próximo passo.
 - A busca pode trazer só um lado do tema: na Q11 (atendimento) vieram só elogios, e a resposta concluiu que não havia críticas.
 - No plano gratuito do Groq há um limite por minuto, e o sistema espera e tenta de novo quando bate nele.

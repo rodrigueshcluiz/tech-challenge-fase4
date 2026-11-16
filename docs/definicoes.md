@@ -6,7 +6,7 @@ Uma definição por métrica, usada em todo o projeto (código, README e vídeo)
 |---|---|
 | `text` | Título + ". " + comentário, com espaços e quebras de linha normalizados. Se só um existe, só ele. |
 | Documento | Uma avaliação (`review_id`) com pelo menos uma letra no texto. Textos só com pontuação ou números ("...", "10") ficam fora. Não há corte por tamanho. |
-| `order_ids` | Todos os pedidos ligados à avaliação, separados por `|` (307 avaliações valem para mais de um pedido). |
+| `order_ids` | Todos os pedidos ligados à avaliação, separados por `|` (306 avaliações valem para mais de um pedido). |
 | `score` | Nota de 1 a 5 dada pelo cliente. |
 | `review_date` | Data em que a Olist enviou a pesquisa de satisfação (`review_creation_date`, AAAA-MM-DD). |
 | `categories` | Categorias dos produtos do pedido, em português, separadas por `|`. Vazio quando não há categoria. |

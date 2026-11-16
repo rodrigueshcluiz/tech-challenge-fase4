@@ -1,6 +1,6 @@
 """Testes das etapas 2 a 4: índice, recuperação, recusa e resposta com citações.
 
-Usam um embedding "de mentira" (saco de palavras) e um Gemini "de mentira" com
+Usam um embedding "de mentira" (saco de palavras) e um LLM "de mentira" com
 respostas fixas. Assim os testes rodam sem internet, sem GPU e sem chave, e
 provam a lógica do pipeline. A qualidade do modelo de verdade é medida na etapa 5.
 """
