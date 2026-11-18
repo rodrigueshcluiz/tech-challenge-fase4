@@ -1,6 +1,6 @@
 # Voz do Cliente com RAG (Olist)
 
-Tech Challenge da Fase 4 da POSTECH (IA para Devs / AI Scientist).
+Tech Challenge da Fase 4 da POSTECH - AI Scientist.
 
 O sistema responde perguntas de negócio sobre a experiência de compra usando **só as avaliações reais de clientes** da base pública da Olist (2016 a 2018). Toda resposta cita as avaliações que a sustentam. Quando não há evidência suficiente, ou a pergunta foge do assunto, o sistema **recusa em vez de inventar**.
 
